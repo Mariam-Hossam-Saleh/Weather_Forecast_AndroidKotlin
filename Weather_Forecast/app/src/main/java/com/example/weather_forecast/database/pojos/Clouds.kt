@@ -1,4 +1,5 @@
 package com.example.weather_forecast.database.pojos
 
-class Clouds {
-}
+data class Clouds(
+    val all: Int
+)

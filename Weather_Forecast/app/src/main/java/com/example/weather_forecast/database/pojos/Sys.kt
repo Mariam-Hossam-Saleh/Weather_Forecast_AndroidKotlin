@@ -1,4 +1,5 @@
 package com.example.weather_forecast.database.pojos
 
-class Sys {
-}
+data class Sys(
+    val pod: String
+)
