@@ -1,12 +1,12 @@
 package com.example.weather_forecast.network
 
-import com.example.weather_forecast.database.pojos.WeatherResponse
+import com.example.weather_forecast.model.pojos.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface WeatherService {
     @GET("forecast")
-    fun getWeatherForecast(
+    suspend fun getWeatherForecast(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,

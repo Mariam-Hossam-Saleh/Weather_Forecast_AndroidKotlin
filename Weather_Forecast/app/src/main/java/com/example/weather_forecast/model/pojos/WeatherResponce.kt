@@ -1,4 +1,4 @@
-package com.example.weather_forecast.database.pojos
+package com.example.weather_forecast.model.pojos
 
 data class WeatherResponse(
     val cod: String,

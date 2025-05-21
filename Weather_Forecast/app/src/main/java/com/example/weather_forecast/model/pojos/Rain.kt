@@ -1,4 +1,4 @@
-package com.example.weather_forecast.database.pojos
+package com.example.weather_forecast.model.pojos
 
 import com.google.gson.annotations.SerializedName
 
