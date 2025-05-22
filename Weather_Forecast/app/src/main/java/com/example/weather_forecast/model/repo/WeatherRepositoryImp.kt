@@ -1,6 +1,7 @@
 package com.example.weather_forecast.model.repo
 
 import com.example.weather_forecast.database.WeatherLocalDataSource
+import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.network.WeatherRemoteDataSource
 
@@ -25,6 +26,10 @@ class WeatherRepositoryImp (
         weatherLocalDataSource.insertWeatherList(weatherList)
     }
 
+    override suspend fun insertCurrentWeather(CurrentWeather: CurrentWeatherEntity) {
+        weatherLocalDataSource.insertCurrentWeather(CurrentWeather)
+    }
+
     override suspend fun getAllWeather(
         isRemote: Boolean,
         lat: Double,
@@ -36,6 +41,20 @@ class WeatherRepositoryImp (
         }
         else {
             weatherLocalDataSource.getAllWeather()
+        }
+    }
+
+    override suspend fun getCurrentWeather(
+        isRemote: Boolean,
+        lat: Double,
+        lon: Double,
+        apiKey: String
+    ): CurrentWeatherEntity {
+        return  if(isRemote) {
+            weatherRemoteDataSource.getCurrentWeatherOverNetwork(lat,lon,apiKey)
+        }
+        else {
+            weatherLocalDataSource.getCurrentWeather()
         }
     }
 

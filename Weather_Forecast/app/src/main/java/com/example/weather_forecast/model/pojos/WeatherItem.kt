@@ -1,7 +1,5 @@
 package com.example.weather_forecast.model.pojos
 
-import androidx.room.Entity
-
 //@Entity(tableName = "weather_table")
 data class WeatherItem(
     val dt: Long,
@@ -17,7 +15,7 @@ data class WeatherItem(
 ) {
     companion object {
         // WeatherItem to WeatherEntity Mapper
-        fun WeatherItem.toEntity(cityName: String): WeatherEntity {
+        fun WeatherItem.toWeatherEntity(cityName: String): WeatherEntity {
             return WeatherEntity(
                 dt = dt,
                 dateText = dt_txt,
@@ -32,5 +30,4 @@ data class WeatherItem(
         }
     }
 }
-
 

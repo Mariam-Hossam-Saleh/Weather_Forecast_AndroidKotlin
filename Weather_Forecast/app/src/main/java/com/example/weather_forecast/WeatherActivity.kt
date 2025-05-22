@@ -25,7 +25,7 @@ class WeatherActivity : AppCompatActivity() {
         WeatherViewModelFactory(
             WeatherRepositoryImp.getInstance(
                 WeatherRemoteDataSourceImp(createWeatherService()),
-                WeatherLocalDataSourceImp(WeatherDatabase.getInstance(this).getWeatherDao())
+                WeatherLocalDataSourceImp(WeatherDatabase.getInstance(this).weatherDao())
             )
         )
     }
@@ -41,6 +41,7 @@ class WeatherActivity : AppCompatActivity() {
 
         // Default location (London)
         viewModel.fetchWeather(51.5074, -0.1278)
+        viewModel.fetchCurrentWeather(59.5074, -0.1678)
 
         binding.btnFetch.setOnClickListener {
             val lat = binding.etLatitude.text.toString().toDoubleOrNull() ?: 51.5074
