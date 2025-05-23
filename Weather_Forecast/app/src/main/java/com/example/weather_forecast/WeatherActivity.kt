@@ -14,6 +14,7 @@ import com.example.weather_forecast.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.databinding.ActivityWeatherBinding
 import com.example.weather_forecast.model.repo.WeatherRepository
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
+import com.example.weather_forecast.network.RetrofitHelper
 import com.example.weather_forecast.network.WeatherRemoteDataSourceImp
 import com.example.weather_forecast.network.WeatherService
 import retrofit2.Retrofit
@@ -24,7 +25,7 @@ class WeatherActivity : AppCompatActivity() {
     private val viewModel: WeatherViewModel by viewModels {
         WeatherViewModelFactory(
             WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp(createWeatherService()),
+                WeatherRemoteDataSourceImp(RetrofitHelper.service),
                 WeatherLocalDataSourceImp(WeatherDatabase.getInstance(this).weatherDao())
             )
         )
@@ -40,8 +41,8 @@ class WeatherActivity : AppCompatActivity() {
         setupObservers()
 
         // Default location (London)
-        viewModel.fetchWeather(51.5074, -0.1278)
-        viewModel.fetchCurrentWeather(59.5074, -0.1678)
+        viewModel.fetchWeather(30.8025, 26.8206)
+        viewModel.fetchCurrentWeather(30.8025, 26.8206)
 
         binding.btnFetch.setOnClickListener {
             val lat = binding.etLatitude.text.toString().toDoubleOrNull() ?: 51.5074

@@ -30,13 +30,14 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
             _errorMessage.value = null
             try {
                 val result = repository.getAllWeather(
-                    isRemote = true,
-                    lat = lat,
-                    lon = lon,
-                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+                    isRemote = false,
+//                    lat = lat,
+//                    lon = lon,
+//                    apiKey = "e82d172019ed90076e2ec824decb3d40"
                 )
                 _weatherList.value = result
-                repository.insertWeatherList(result) // Fix: pass result directly
+//                repository.clearWeather()
+//                repository.insertWeatherList(result) // Fix: pass result directly
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch weather: ${e.message}"
             } finally {
@@ -51,13 +52,13 @@ class WeatherViewModel(private val repository: WeatherRepository) : ViewModel() 
             _errorMessage.value = null
             try {
                 val result = repository.getCurrentWeather(
-                    isRemote = true,
-                    lat = lat,
-                    lon = lon,
-                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+                    isRemote = false,
+//                    lat = lat,
+//                    lon = lon,
+//                    apiKey = "e82d172019ed90076e2ec824decb3d40"
                 )
                 _currentWeather.value = result
-                repository.insertCurrentWeather(result)
+//                repository.insertCurrentWeather(result)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to current fetch weather: ${e.message}"
                 Log.i("CurrentWeather",e.message.toString())

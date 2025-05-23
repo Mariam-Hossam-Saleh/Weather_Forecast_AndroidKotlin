@@ -11,7 +11,7 @@ interface WeatherService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric" // Optional: for Celsius
+        @Query("units") units: String = "metric" // for Celsius
     ): WeatherResponse
 
     @GET("weather")
@@ -19,6 +19,6 @@ interface WeatherService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric" // Optional: for Celsius
+        @Query("units") units: String = "metric" // for Celsius
     ): CurrentWeatherResponce
 }

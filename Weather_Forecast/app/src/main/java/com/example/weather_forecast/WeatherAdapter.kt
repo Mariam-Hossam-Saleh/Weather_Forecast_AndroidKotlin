@@ -1,5 +1,6 @@
 package com.example.weather_forecast
 
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
@@ -39,7 +40,7 @@ class WeatherAdapter(private val onItemClick: (WeatherEntity) -> Unit) :
                 tvWeather.text = weather.weatherMain
                 tvDescription.text = weather.weatherDescription
                 tvHumidity.text = "Humidity: ${weather.humidity}%"
-
+                Log.i("AdapterTime",Date(weather.dt * 1000).toString())
                 root.setOnClickListener {
                     onItemClick(weather) // Now accessible
                 }

@@ -23,4 +23,5 @@ interface WeatherRepository {
     ): CurrentWeatherEntity
 
     suspend fun clearWeather()
+
 }

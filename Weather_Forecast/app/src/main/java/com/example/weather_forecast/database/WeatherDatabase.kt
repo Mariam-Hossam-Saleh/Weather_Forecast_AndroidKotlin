@@ -16,8 +16,6 @@ import com.example.weather_forecast.model.pojos.WeatherEntity
 )
 abstract class WeatherDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
-//    abstract fun currentWeatherDao(): CurrentWeatherDao
-
     companion object {
         @Volatile
         private var INSTANCE: WeatherDatabase? = null

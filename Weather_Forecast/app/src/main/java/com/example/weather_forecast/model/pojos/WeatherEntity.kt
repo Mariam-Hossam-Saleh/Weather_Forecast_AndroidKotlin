@@ -17,6 +17,7 @@ data class WeatherEntity(
 
 @Entity(tableName = "current_weather_table", primaryKeys = ["cityName"])
 data class CurrentWeatherEntity(
+    val dt: Long,
     // Coord
     val coordLon: Double,
     val coordLat: Double,
@@ -46,7 +47,6 @@ data class CurrentWeatherEntity(
     // Rain?,
     val rain: Double?,
     val clouds: Int,
-    val dt: Long,
     //Sys
     val sysType: Int?,
     val sysId: Int?,
