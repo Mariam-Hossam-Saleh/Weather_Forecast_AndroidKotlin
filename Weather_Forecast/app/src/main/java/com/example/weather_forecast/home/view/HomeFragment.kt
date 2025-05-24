@@ -33,8 +33,11 @@ class HomeFragment : Fragment(),OnWeatherClickListener {
     private lateinit var homeViewModelFactory: HomeViewModelFactory
     private lateinit var viewModel: HomeViewModel
     private lateinit var homeRecyclerView: RecyclerView
-    private lateinit var homeAdapter: HomeAdapter
-    private lateinit var homeLayoutManager: LinearLayoutManager
+    private lateinit var homeTodayRecyclerView: RecyclerView
+    private lateinit var homeWeatherAdapter: HomeWeatherAdapter
+    private lateinit var homeTodayAdapter: HomeTodayAdapter
+    private lateinit var homeWeatherLayoutManager: LinearLayoutManager
+    private lateinit var homeTodayLayoutManager: LinearLayoutManager
     private lateinit var binding: FragmentHomeBinding
 
 
@@ -60,12 +63,17 @@ class HomeFragment : Fragment(),OnWeatherClickListener {
 //        viewModel.fetchWeather(30.8025, 26.8206)
 //        viewModel.fetchCurrentWeather(53.2257, 27.1731)
 //        viewModel.getStoredWeather()
-        setUpRecyclerView()
         setCurrentWeatherInfo()
+        setUpRecyclerView()
 
         viewModel.weatherList.observe(viewLifecycleOwner){ weatherList ->
-            homeAdapter.weatherEntity = weatherList
-            homeAdapter.notifyDataSetChanged()
+            homeWeatherAdapter.weatherEntity = weatherList
+            homeWeatherAdapter.notifyDataSetChanged()
+        }
+
+        viewModel.weatherList.observe(viewLifecycleOwner){ todayWeatherList ->
+            homeTodayAdapter.weatherEntity = todayWeatherList
+            homeTodayAdapter.notifyDataSetChanged()
         }
     }
 
@@ -86,12 +94,24 @@ class HomeFragment : Fragment(),OnWeatherClickListener {
 //    }
 
     private fun setUpRecyclerView(){
-        homeLayoutManager = LinearLayoutManager(requireContext())
-        homeLayoutManager.orientation = RecyclerView.VERTICAL
-        homeAdapter = HomeAdapter(requireContext(),ArrayList(),this)
+        // Initialize the RecyclerView and its adapter for the next days weather
+        homeWeatherLayoutManager = LinearLayoutManager(requireContext())
+        homeWeatherLayoutManager.orientation = RecyclerView.VERTICAL
+        homeWeatherAdapter = HomeWeatherAdapter(requireContext(),ArrayList(),this)
         homeRecyclerView = binding.nextDaysRecycleView
-        homeRecyclerView.adapter = homeAdapter
-        homeRecyclerView.layoutManager = homeLayoutManager
+        homeRecyclerView.setHasFixedSize(true)
+        homeRecyclerView.adapter = homeWeatherAdapter
+        homeRecyclerView.layoutManager = homeWeatherLayoutManager
+
+        // Initialize the RecyclerView and its adapter for today's weather
+        homeTodayLayoutManager = LinearLayoutManager(requireContext())
+        homeTodayLayoutManager.orientation = RecyclerView.HORIZONTAL
+        homeTodayAdapter = HomeTodayAdapter(requireContext(),ArrayList(),this)
+        homeTodayRecyclerView = binding.todayRecycleView
+        homeTodayRecyclerView.setHasFixedSize(true)
+        homeTodayRecyclerView.adapter = homeTodayAdapter
+        homeTodayRecyclerView.layoutManager = homeTodayLayoutManager
+
     }
 
 

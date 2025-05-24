@@ -2,65 +2,66 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="05dp"
     app:cardElevation="0dp"
+
     android:background="@android:color/transparent"
-    app:cardBackgroundColor="@android:color/transparent"
+    app:cardBackgroundColor="@color/semi_transparent"
     app:cardCornerRadius="20dp">
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@color/semi_transparent"
-        android:orientation="horizontal"
+        android:layout_width="110dp"
+        android:layout_height="180dp"
+        android:background="@color/transparent"
+        android:orientation="vertical"
         android:scaleType="centerCrop">
 
         <TextView
-            android:id="@+id/Date"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/temp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:textAlignment="center"
             android:textColor="@color/white"
-            android:textSize="20sp"
-            android:text="@string/date"
-            android:layout_marginStart="30dp"
-            android:layout_marginEnd="15dp"
-            android:gravity="center"
-            tools:ignore="SmallSp" />
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:textSize="16sp"
+            android:text="@string/state"
+            tools:ignore="SmallSp"
+            android:gravity="center"/>
+
         <ImageView
             android:id="@+id/imgIcon"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:background="@android:color/transparent"
-            android:layout_marginEnd="15dp"/>
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/transparent" />
 
         <TextView
-            android:id="@+id/mainStatus"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:id="@+id/windSpeed"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
             android:background="@android:color/transparent"
             android:textColor="@color/white"
-            android:textSize="16sp"
-            android:text="State"
+            android:textSize="14sp"
+            android:text="@string/state"
             tools:ignore="SmallSp"
             android:gravity="center"
-            android:layout_marginEnd="5dp"/>
+            android:layout_gravity="center_horizontal"/>
 
         <TextView
-            android:id="@+id/minMaxTemp"
+            android:id="@+id/time"
             android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="wrap_content"
             android:background="@android:color/transparent"
+            android:textAlignment="center"
             android:textColor="@color/white"
             android:textSize="16sp"
-            android:text="Temp"
-            android:layout_marginEnd="30sp"
-            tools:ignore="SmallSp"
-            android:gravity="center"/>
-
+            android:text="@string/time"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            tools:ignore="SmallSp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

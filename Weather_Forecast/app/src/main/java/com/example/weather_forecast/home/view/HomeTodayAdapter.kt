@@ -4,24 +4,24 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.weather_forecast.databinding.ItemWeatherBinding
+import com.example.weather_forecast.databinding.ItemCurrentWeatherBinding
+import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
 import java.text.SimpleDateFormat
 import java.util.*
 
 
-class HomeAdapter(private val context: Context,var weatherEntity: List<WeatherEntity>,private val onItemClick: OnWeatherClickListener) : RecyclerView.Adapter<HomeAdapter.WeatherViewHolder>() {
+class HomeTodayAdapter(private val context: Context, var weatherEntity: List<WeatherEntity>, private val onItemClick: OnWeatherClickListener) : RecyclerView.Adapter<HomeTodayAdapter.WeatherViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
-        val binding = ItemWeatherBinding.inflate(
+        val binding = ItemCurrentWeatherBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -30,7 +30,7 @@ class HomeAdapter(private val context: Context,var weatherEntity: List<WeatherEn
     }
 
     override fun getItemCount(): Int {
-        return weatherEntity.size
+        return weatherEntity.size.coerceAtMost(8) // Limit to 8 items
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
@@ -50,21 +50,21 @@ class HomeAdapter(private val context: Context,var weatherEntity: List<WeatherEn
     }
 
     class WeatherViewHolder(
-        val binding: ItemWeatherBinding,
+        val binding: ItemCurrentWeatherBinding,
         val onItemClick: OnWeatherClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
-        fun bind(weather: WeatherEntity) {
+        fun bind(currentWeather: WeatherEntity) {
             binding.apply {
-                Date.text = SimpleDateFormat("EEE", Locale.getDefault())
-                    .format(Date(weather.dt * 1000))
-                minMaxTemp.text = "${weather.temp}/${weather.temp}°C"
-                mainStatus.text = weather.weatherMain
+                time.text =  SimpleDateFormat("HH:mm", Locale.getDefault())
+                    .format(Date(currentWeather.dt * 1000))
+                temp.text = "${currentWeather.temp}°C"
+                windSpeed.text = "${currentWeather.humidity.toString()}km/h"
 //                tvDescription.text = weather.weatherDescription
 //                tvHumidity.text = "Humidity: ${weather.humidity}%"
                 root.setOnClickListener {
-                    onItemClick.onWeatherClick(weather)
+                    onItemClick.onWeatherClick(currentWeather)
                 }
             }
         }

@@ -71,8 +71,7 @@ fun getIconResId(iconCode: String): Int {
         "03n" -> R.drawable.ic_03n
         "04d" -> R.drawable.ic_04d
         "04n" -> R.drawable.ic_04n
-        // Add all the expected mappings
-        else -> R.drawable.ic_03d // fallback icon
+        else -> R.drawable.ic_01d
     }
 }
 
@@ -86,6 +85,6 @@ fun getWeatherStateResId(weatherMain: String): Int {
         "Drizzle" -> R.drawable.drizzle
         "Mist" -> R.drawable.mist2
         "Haze" -> R.drawable.mist4
-        else -> R.drawable.clear1 // fallback icon
+        else -> R.drawable.clear1
     }
 }
