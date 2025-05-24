@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.weather_forecast.R
 import com.example.weather_forecast.databinding.FragmentGalleryBinding
 
 class GalleryFragment : Fragment() {
@@ -28,11 +29,18 @@ class GalleryFragment : Fragment() {
         _binding = FragmentGalleryBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
+
         val textView: TextView = binding.textGallery
         galleryViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<View>(R.id.app_bar_main).setBackgroundResource(R.drawable.snow2)
+
     }
 
     override fun onDestroyView() {

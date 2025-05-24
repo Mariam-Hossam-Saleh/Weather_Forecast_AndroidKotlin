@@ -1,9 +1,9 @@
 package com.example.weather_forecast.model.repo
 
-import com.example.weather_forecast.database.WeatherLocalDataSource
+import com.example.weather_forecast.model.database.WeatherLocalDataSource
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
-import com.example.weather_forecast.network.WeatherRemoteDataSource
+import com.example.weather_forecast.model.network.WeatherRemoteDataSource
 
 class WeatherRepositoryImp (
     private var weatherRemoteDataSource : WeatherRemoteDataSource,
@@ -60,5 +60,9 @@ class WeatherRepositoryImp (
 
     override suspend fun clearWeather() {
         weatherLocalDataSource.clearWeather()
+    }
+
+    override suspend fun clearCurrentWeather() {
+        weatherLocalDataSource.clearCurrentWeather()
     }
 }

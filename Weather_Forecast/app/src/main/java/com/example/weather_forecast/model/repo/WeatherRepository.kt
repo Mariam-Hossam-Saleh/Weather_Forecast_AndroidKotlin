@@ -24,4 +24,6 @@ interface WeatherRepository {
 
     suspend fun clearWeather()
 
+    suspend fun clearCurrentWeather()
+
 }

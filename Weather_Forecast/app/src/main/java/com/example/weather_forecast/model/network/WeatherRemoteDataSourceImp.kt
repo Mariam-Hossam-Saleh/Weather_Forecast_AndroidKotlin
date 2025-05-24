@@ -1,4 +1,4 @@
-package com.example.weather_forecast.network
+package com.example.weather_forecast.model.network
 
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.CurrentWeatherResponce

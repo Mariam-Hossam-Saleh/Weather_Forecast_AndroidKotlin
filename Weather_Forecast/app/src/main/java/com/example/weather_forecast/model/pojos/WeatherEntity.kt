@@ -1,6 +1,7 @@
 package com.example.weather_forecast.model.pojos
 
 import androidx.room.Entity
+import com.example.weather_forecast.R
 
 @Entity(tableName = "weather_table", primaryKeys = ["dt", "cityName"])
 data class WeatherEntity(
@@ -59,3 +60,32 @@ data class CurrentWeatherEntity(
     val cityName: String,
     val cod: Int
 )
+
+fun getIconResId(iconCode: String): Int {
+    return when (iconCode) {
+        "01d" -> R.drawable.ic_01d
+        "01n" -> R.drawable.ic_01n
+        "02d" -> R.drawable.ic_02d
+        "02n" -> R.drawable.ic_02n
+        "03d" -> R.drawable.ic_03d
+        "03n" -> R.drawable.ic_03n
+        "04d" -> R.drawable.ic_04d
+        "04n" -> R.drawable.ic_04n
+        // Add all the expected mappings
+        else -> R.drawable.ic_03d // fallback icon
+    }
+}
+
+fun getWeatherStateResId(weatherMain: String): Int {
+    return when (weatherMain) {
+        "Clear" -> R.drawable.clear2
+        "Clouds" -> R.drawable.cloud7
+        "Rain" -> R.drawable.rain2
+        "Snow" -> R.drawable.snow2
+        "Thunderstorm" -> R.drawable.thunderstorm2
+        "Drizzle" -> R.drawable.drizzle
+        "Mist" -> R.drawable.mist2
+        "Haze" -> R.drawable.mist4
+        else -> R.drawable.clear1 // fallback icon
+    }
+}
