@@ -2,6 +2,7 @@ package com.example.weather_forecast.home.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,19 +17,20 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.weather_forecast.R
-import com.example.weather_forecast.model.database.WeatherDatabase
-import com.example.weather_forecast.model.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.databinding.FragmentHomeBinding
 import com.example.weather_forecast.home.viewmodel.HomeViewModel
 import com.example.weather_forecast.home.viewmodel.HomeViewModelFactory
-import com.example.weather_forecast.model.repo.WeatherRepositoryImp
+import com.example.weather_forecast.model.database.WeatherDatabase
+import com.example.weather_forecast.model.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.model.network.RetrofitHelper
 import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
 import com.example.weather_forecast.model.pojos.getWeatherStateResId
+import com.example.weather_forecast.model.repo.WeatherRepositoryImp
+import com.example.weather_forecast.utils.location.LocationPermissionHandler
 
-class HomeFragment : Fragment(),OnWeatherClickListener {
+class HomeFragment : Fragment(), OnWeatherClickListener {
 
     private lateinit var homeViewModelFactory: HomeViewModelFactory
     private lateinit var viewModel: HomeViewModel
@@ -39,7 +41,7 @@ class HomeFragment : Fragment(),OnWeatherClickListener {
     private lateinit var homeWeatherLayoutManager: LinearLayoutManager
     private lateinit var homeTodayLayoutManager: LinearLayoutManager
     private lateinit var binding: FragmentHomeBinding
-
+    private lateinit var locationHandler: LocationPermissionHandler
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,103 +55,124 @@ class HomeFragment : Fragment(),OnWeatherClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Initialize ViewModel
         homeViewModelFactory = HomeViewModelFactory(
             WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp(RetrofitHelper.service),
+                WeatherRemoteDataSourceImp(RetrofitHelper.service,requireContext()),
                 WeatherLocalDataSourceImp(WeatherDatabase.getInstance(requireContext()).weatherDao())
             )
         )
         viewModel = ViewModelProvider(this, homeViewModelFactory)[HomeViewModel::class.java]
-//        viewModel.fetchWeather(30.8025, 26.8206)
-//        viewModel.fetchCurrentWeather(53.2257, 27.1731)
-//        viewModel.getStoredWeather()
-        setCurrentWeatherInfo()
-        setUpRecyclerView()
 
-        viewModel.weatherList.observe(viewLifecycleOwner){ weatherList ->
-            homeWeatherAdapter.weatherEntity = weatherList
+        // Initialize LocationPermissionHandler
+        locationHandler = LocationPermissionHandler(
+            fragment = this,
+            onLocationFetched = { latitude, longitude ->
+                Log.d("HomeFragment", "Location fetched: lat=$latitude, lon=$longitude")
+                viewModel.fetchWeather(latitude, longitude)
+                viewModel.fetchCurrentWeather(latitude, longitude)
+                binding.cardAllowLocation.visibility = View.GONE
+                binding.cardView.visibility = View.VISIBLE
+                binding.todayRecycleView.visibility = View.VISIBLE
+                binding.nextDaysRecycleView.visibility = View.VISIBLE
+            },
+
+            onShowAllowLocationCard = {
+                Log.d("HomeFragment", "Showing Allow Location card due to permission denial")
+                binding.cardAllowLocation.visibility = View.VISIBLE
+                binding.cardView.visibility = View.GONE
+                binding.todayRecycleView.visibility = View.GONE
+                binding.nextDaysRecycleView.visibility = View.GONE
+            }
+        )
+
+        // Set up RecyclerView and observers
+        setUpRecyclerView()
+        setCurrentWeatherInfo()
+
+        viewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
+            homeWeatherAdapter.weatherEntity = weatherList ?: emptyList()
+            homeTodayAdapter.weatherEntity = weatherList ?: emptyList()
             homeWeatherAdapter.notifyDataSetChanged()
+            homeTodayAdapter.notifyDataSetChanged()
         }
 
-        viewModel.weatherList.observe(viewLifecycleOwner){ todayWeatherList ->
-            homeTodayAdapter.weatherEntity = todayWeatherList
-            homeTodayAdapter.notifyDataSetChanged()
+        viewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                Log.e("HomeFragment", "Error: $it")
+                // Show cached data if available
+                viewModel.getStoredWeather()
+                viewModel.getStoredCurrentWeather()
+                // Ensure UI is visible even on error
+                binding.cardAllowLocation.visibility = View.GONE
+                binding.cardView.visibility = View.VISIBLE
+                binding.todayRecycleView.visibility = View.VISIBLE
+                binding.nextDaysRecycleView.visibility = View.VISIBLE
+            }
+        }
+
+        // Request location permission
+        locationHandler.requestLocationPermission()
+
+        binding.btnEnableLocation.setOnClickListener {
+            Log.d("HomeFragment", "Enable Location button clicked")
+            locationHandler.promptToEnableLocation()
+        }
+
+        binding.btnRequestLocation.setOnClickListener {
+            Log.d("HomeFragment", "Enable Location services button clicked")
+            locationHandler.requestLocationPermission()
         }
     }
 
-//    private fun setupObservers() {
-//        viewModel.weatherList.observe(viewLifecycleOwner, Observer { weatherList ->
-//            weatherAdapter.submitList(weatherList)
-//        })
-//
-//        viewModel.isLoading.observe(viewLifecycleOwner, Observer { isLoading ->
-//            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-//        })
-//
-//        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { errorMessage ->
-//            errorMessage?.let {
-//                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-//            }
-//        })
-//    }
-
-    private fun setUpRecyclerView(){
-        // Initialize the RecyclerView and its adapter for the next days weather
+    private fun setUpRecyclerView() {
         homeWeatherLayoutManager = LinearLayoutManager(requireContext())
         homeWeatherLayoutManager.orientation = RecyclerView.VERTICAL
-        homeWeatherAdapter = HomeWeatherAdapter(requireContext(),ArrayList(),this)
+        homeWeatherAdapter = HomeWeatherAdapter(requireContext(), ArrayList(), this)
         homeRecyclerView = binding.nextDaysRecycleView
         homeRecyclerView.setHasFixedSize(true)
         homeRecyclerView.adapter = homeWeatherAdapter
         homeRecyclerView.layoutManager = homeWeatherLayoutManager
 
-        // Initialize the RecyclerView and its adapter for today's weather
         homeTodayLayoutManager = LinearLayoutManager(requireContext())
         homeTodayLayoutManager.orientation = RecyclerView.HORIZONTAL
-        homeTodayAdapter = HomeTodayAdapter(requireContext(),ArrayList(),this)
+        homeTodayAdapter = HomeTodayAdapter(requireContext(), ArrayList(), this)
         homeTodayRecyclerView = binding.todayRecycleView
         homeTodayRecyclerView.setHasFixedSize(true)
         homeTodayRecyclerView.adapter = homeTodayAdapter
         homeTodayRecyclerView.layoutManager = homeTodayLayoutManager
-
     }
-
 
     private fun setCurrentWeatherInfo() {
-        viewModel.currentWeather.observe(viewLifecycleOwner) { currentWeather ->
-            binding.apply {
-                currentTemp.text = "${currentWeather.mainTemp}°C"
-                currentState.text = "${currentWeather.weatherMain}"
-//                currentHumidity.text = "${currentWeather.humidity}%"
-//                currentWindSpeed.text = "${currentWeather.windSpeed} m/s"
-//                currentPressure.text = "${currentWeather.pressure} hPa"
-//                currentDescription.text = currentWeather.description
-                Glide.with(requireContext())
-                    .load(getIconResId(currentWeather.weatherIcon))
-                    .apply(
-                        RequestOptions()
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .transform(CenterCrop(), RoundedCorners(30))
-                            .override(200, 200)
-//                    .placeholder(R.drawable.loading)
-//                    .error(R.drawable.imagefailed)
-                    )
-                    .into(imgIcon)
-                requireActivity().findViewById<View>(R.id.app_bar_main).setBackgroundResource(getWeatherStateResId(currentWeather.weatherMain))
-
+        viewModel.todayWeather.observe(viewLifecycleOwner) { currentWeather ->
+            if (currentWeather != null) {
+                binding.apply {
+                    currentTemp.text = "${currentWeather.mainTemp}°C"
+                    currentState.text = currentWeather.weatherMain
+                    Glide.with(requireContext())
+                        .load(getIconResId(currentWeather.weatherIcon))
+                        .apply(
+                            RequestOptions()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .transform(CenterCrop(), RoundedCorners(30))
+                                .override(200, 200)
+                        )
+                        .into(imgIcon)
+                    requireActivity().findViewById<View>(R.id.app_bar_main)
+                        .setBackgroundResource(getWeatherStateResId(currentWeather.weatherMain))
+                }
+            } else {
+                Log.d("HomeFragment", "Current weather is null, skipping UI update")
+                binding.apply {
+                    currentTemp.text = "N/A"
+                    currentState.text = "N/A"
+                    imgIcon.setImageDrawable(null)
+                    requireActivity().findViewById<View>(R.id.app_bar_main)
+                        .setBackgroundResource(R.drawable.clear1) // Use a default background
+                }
             }
         }
-    }
-
-//    override fun onDestroyView() {
-//        super.onDestroyView()
-//        binding = null
-//    }
-
-    override fun onResume() {
-        super.onResume()
-//        requireActivity().findViewById<View>(R.id.app_bar_main).setBackgroundResource(getWeatherStateResId())
-
     }
 
     override fun onWeatherClick(weather: WeatherEntity) {

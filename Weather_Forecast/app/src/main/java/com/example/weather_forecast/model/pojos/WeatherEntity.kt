@@ -51,7 +51,7 @@ data class CurrentWeatherEntity(
     //Sys
     val sysType: Int?,
     val sysId: Int?,
-    val sysCountry: String,
+    val sysCountry: String?,
     val sysSunrise: Long,
     val sysSunset: Long,
 

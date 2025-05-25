@@ -15,8 +15,8 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
     private val _weatherList = MutableLiveData<List<WeatherEntity>>()
     val weatherList: LiveData<List<WeatherEntity>> = _weatherList
 
-    private val _currentWeather = MutableLiveData<CurrentWeatherEntity>()
-    val currentWeather: LiveData<CurrentWeatherEntity> = _currentWeather
+    private val _todayWeather = MutableLiveData<CurrentWeatherEntity>()
+    val todayWeather: LiveData<CurrentWeatherEntity> = _todayWeather
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -24,10 +24,6 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    init {
-        getStoredWeather()
-        getStoredCurrentWeather()
-    }
 
     fun fetchWeather(lat: Double, lon: Double) {
         viewModelScope.launch {
@@ -38,13 +34,15 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     isRemote = true,
                     lat = lat,
                     lon = lon,
-                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+//                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
                 )
                 _weatherList.value = result
                 repo.clearWeather()
                 repo.insertWeatherList(result)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch weather: ${e.message}"
+                Log.e("HomeViewModel", "Error fetching weather", e)
             } finally {
                 _isLoading.value = false
             }
@@ -62,6 +60,7 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                 _weatherList.value = result
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to get stored weather: ${e.message}"
+                Log.e("HomeViewModel", "Error getting stored weather", e)
             } finally {
                 _isLoading.value = false
             }
@@ -77,13 +76,15 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     isRemote = true,
                     lat = lat,
                     lon = lon,
-                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+//                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
                 )
-                _currentWeather.value = result
+                _todayWeather.value = result
                 repo.clearCurrentWeather()
                 repo.insertCurrentWeather(result)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch current weather: ${e.message}"
+                Log.e("HomeViewModel", "Error fetching current weather", e)
             } finally {
                 _isLoading.value = false
             }
@@ -98,9 +99,10 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                 val result = repo.getCurrentWeather(
                     isRemote = false,
                 )
-                _currentWeather.value = result
+                _todayWeather.value = result
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to get stored current weather: ${e.message}"
+                Log.e("HomeViewModel", "Error getting stored current weather", e)
             } finally {
                 _isLoading.value = false
             }
