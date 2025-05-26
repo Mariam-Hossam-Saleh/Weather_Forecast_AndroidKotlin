@@ -34,8 +34,8 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     isRemote = true,
                     lat = lat,
                     lon = lon,
-//                    apiKey = "e82d172019ed90076e2ec824decb3d40"
-                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
+                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+//                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
                 )
                 _weatherList.value = result
                 repo.clearWeather()
@@ -76,8 +76,8 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     isRemote = true,
                     lat = lat,
                     lon = lon,
-//                    apiKey = "e82d172019ed90076e2ec824decb3d40"
-                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
+                    apiKey = "e82d172019ed90076e2ec824decb3d40"
+//                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
                 )
                 _todayWeather.value = result
                 repo.clearCurrentWeather()

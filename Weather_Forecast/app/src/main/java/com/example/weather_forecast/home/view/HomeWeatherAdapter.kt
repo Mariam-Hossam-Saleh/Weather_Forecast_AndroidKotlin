@@ -35,7 +35,7 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
 //        holder.bind(getItem(position))
         Glide.with(context)
-            .load(getIconResId(weatherEntity.get(position).weatherIcon))
+            .load(getIconResId(weatherEntity.get(position).icon))
             .apply(
                 RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -58,7 +58,7 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
             binding.apply {
                 Date.text = SimpleDateFormat("EEE", Locale.getDefault())
                     .format(Date(weather.dt * 1000))
-                minMaxTemp.text = "${weather.mainTemp_min}/${weather.mainTemp_max}°C"
+                minMaxTemp.text = "${weather.temp}/${weather.temp}°C"
                 mainStatus.text = weather.weatherMain
 //                tvDescription.text = weather.weatherDescription
 //                tvHumidity.text = "Humidity: ${weather.humidity}%"
