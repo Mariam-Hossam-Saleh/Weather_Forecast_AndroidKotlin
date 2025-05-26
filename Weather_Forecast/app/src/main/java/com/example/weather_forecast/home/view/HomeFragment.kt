@@ -1,6 +1,8 @@
 package com.example.weather_forecast.home.view
 
+import WeatherRemoteDataSourceImp
 import android.annotation.SuppressLint
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -23,12 +25,13 @@ import com.example.weather_forecast.home.viewmodel.HomeViewModelFactory
 import com.example.weather_forecast.model.database.WeatherDatabase
 import com.example.weather_forecast.model.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.model.network.RetrofitHelper
-import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
 import com.example.weather_forecast.model.pojos.getWeatherStateResId
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.utils.location.LocationPermissionHandler
+import java.util.Date
+import java.util.Locale
 
 class HomeFragment : Fragment(), OnWeatherClickListener {
 
@@ -58,7 +61,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         // Initialize ViewModel
         homeViewModelFactory = HomeViewModelFactory(
             WeatherRepositoryImp.getInstance(
-                WeatherRemoteDataSourceImp(RetrofitHelper.service,requireContext()),
+                WeatherRemoteDataSourceImp(RetrofitHelper.service, requireContext()),
                 WeatherLocalDataSourceImp(WeatherDatabase.getInstance(requireContext()).weatherDao())
             )
         )
@@ -102,8 +105,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                 Log.e("HomeFragment", "Error: $it")
                 // Show cached data if available
-                viewModel.getStoredWeather()
-                viewModel.getStoredCurrentWeather()
+//                viewModel.getStoredWeather()
+//                viewModel.getStoredCurrentWeather()
                 // Ensure UI is visible even on error
                 binding.cardAllowLocation.visibility = View.GONE
                 binding.cardView.visibility = View.VISIBLE
@@ -150,6 +153,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 binding.apply {
                     currentTemp.text = "${currentWeather.mainTemp}°C"
                     currentState.text = currentWeather.weatherMain
+                    currentDateAndTime.text = SimpleDateFormat("EEE, MMM d, HH:mm", Locale.getDefault())
+                        .format(Date(currentWeather.dt * 1000))
                     Glide.with(requireContext())
                         .load(getIconResId(currentWeather.weatherIcon))
                         .apply(

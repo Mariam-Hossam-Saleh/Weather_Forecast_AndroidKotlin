@@ -83,7 +83,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="300dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
             android:layout_marginTop="20dp"
@@ -120,6 +120,14 @@
                     android:layout_marginTop="10dp"
                     android:textColor="@color/white"
                     android:textSize="38dp"/>
+                <TextView
+                    android:id="@+id/currentDateAndTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Current Date and Time"
+                    android:layout_marginTop="10dp"
+                    android:textColor="@color/white"
+                    android:textSize="24dp"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
