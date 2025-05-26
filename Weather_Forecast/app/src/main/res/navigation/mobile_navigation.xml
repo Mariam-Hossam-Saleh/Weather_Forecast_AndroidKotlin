@@ -9,17 +9,33 @@
         android:id="@+id/nav_home"
         android:name="com.example.weather_forecast.home.view.HomeFragment"
         android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_nav_home_to_nav_search"
+            app:destination="@id/nav_search" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_favorite"
+            app:destination="@id/nav_favorite" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_settings"
+            app:destination="@id/nav_settings" />
+    </fragment>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.example.weather_forecast.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:id="@+id/nav_search"
+        android:name="com.example.weather_forecast.search.view.SearchFragment"
+        android:label="@string/menu_search"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
+    android:id="@+id/nav_settings"
+    android:name="com.example.weather_forecast.ui.slideshow.SlideshowFragment"
+    android:label="@string/menu_favorite"
+    tools:layout="@layout/fragment_slideshow" />
+
+    <fragment
+        android:id="@+id/nav_favorite"
         android:name="com.example.weather_forecast.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="@string/menu_favorite"
         tools:layout="@layout/fragment_slideshow" />
 </navigation>

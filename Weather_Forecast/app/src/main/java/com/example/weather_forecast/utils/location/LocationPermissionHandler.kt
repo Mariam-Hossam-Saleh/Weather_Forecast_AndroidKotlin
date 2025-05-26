@@ -242,4 +242,32 @@ class LocationPermissionHandler(
             .setCancelable(false)
             .show()
     }
+
+//    fun getCurrentLocation() {
+//        if (isPermissionGranted()) {
+//            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(fragment.requireContext())
+//            fusedLocationClient.lastLocation
+//                .addOnSuccessListener { location ->
+//                    if (location != null) {
+//                        onLocationFetched(location.latitude, location.longitude)
+//                    } else {
+//                        // Force new location request if last location is null
+//                        requestNewLocationData()
+//                    }
+//                }
+//                .addOnFailureListener {
+//                    onShowAllowLocationCard()
+//                }
+//        } else {
+//            onShowAllowLocationCard()
+//        }
+//    }
+//
+//    private fun isPermissionGranted(): Boolean {
+//        return ContextCompat.checkSelfPermission(
+//            fragment.requireContext(),
+//            Manifest.permission.ACCESS_FINE_LOCATION
+//        ) == PackageManager.PERMISSION_GRANTED
+//    }
+
 }
