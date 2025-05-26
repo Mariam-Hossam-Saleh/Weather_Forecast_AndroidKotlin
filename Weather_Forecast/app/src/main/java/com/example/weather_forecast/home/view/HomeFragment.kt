@@ -29,6 +29,7 @@ import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
 import com.example.weather_forecast.model.pojos.getWeatherStateResId
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
+import com.example.weather_forecast.utils.NetworkUtils
 import com.example.weather_forecast.utils.location.LocationPermissionHandler
 import java.util.Date
 import java.util.Locale
@@ -45,6 +46,26 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private lateinit var homeTodayLayoutManager: LinearLayoutManager
     private lateinit var binding: FragmentHomeBinding
     private lateinit var locationHandler: LocationPermissionHandler
+    private var lastLatitude: Double? = null
+    private var lastLongitude: Double? = null
+
+    override fun onStart() {
+        super.onStart()
+        locationHandler.requestLocationPermission()
+        // If location is already available, fetch data
+        if (lastLatitude != null && lastLongitude != null) {
+            if (NetworkUtils.isNetworkAvailable(requireContext())) {
+                Log.d("HomeFragment", "Network available, fetching from network")
+                viewModel.fetchWeather(lastLatitude!!, lastLongitude!!)
+                viewModel.fetchCurrentWeather(lastLatitude!!, lastLongitude!!)
+            } else {
+                Log.d("HomeFragment", "No network, fetching from database")
+                viewModel.getStoredWeather()
+                viewModel.getStoredCurrentWeather()
+                Toast.makeText(requireContext(), "No internet connection. Showing cached data.", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -72,8 +93,18 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             fragment = this,
             onLocationFetched = { latitude, longitude ->
                 Log.d("HomeFragment", "Location fetched: lat=$latitude, lon=$longitude")
-                viewModel.fetchWeather(latitude, longitude)
-                viewModel.fetchCurrentWeather(latitude, longitude)
+                if (NetworkUtils.isNetworkAvailable(requireContext())) {
+                    Log.d("HomeFragment", "Network available, fetching from network")
+                    lastLatitude = latitude
+                    lastLongitude = longitude
+                    viewModel.fetchWeather(latitude, longitude)
+                    viewModel.fetchCurrentWeather(latitude, longitude)
+                } else {
+                    Log.d("HomeFragment", "No network, fetching from database")
+                    viewModel.getStoredWeather()
+                    viewModel.getStoredCurrentWeather()
+                    Toast.makeText(requireContext(), "No internet connection. Showing cached data.", Toast.LENGTH_LONG).show()
+                }
                 binding.cardAllowLocation.visibility = View.GONE
                 binding.cardView.visibility = View.VISIBLE
                 binding.todayRecycleView.visibility = View.VISIBLE
@@ -180,4 +211,10 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     override fun onWeatherClick(weather: WeatherEntity) {
         Toast.makeText(requireContext(), "Click Listener", Toast.LENGTH_SHORT).show()
     }
+
+//    override fun onStop() {
+//        super.onStop()
+//        lastLatitude = null
+//        lastLongitude = null
+//    }
 }
