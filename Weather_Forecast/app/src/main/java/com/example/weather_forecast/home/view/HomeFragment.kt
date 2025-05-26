@@ -104,10 +104,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                 Log.e("HomeFragment", "Error: $it")
-                // Show cached data if available
-//                viewModel.getStoredWeather()
-//                viewModel.getStoredCurrentWeather()
-                // Ensure UI is visible even on error
+
                 binding.cardAllowLocation.visibility = View.GONE
                 binding.cardView.visibility = View.VISIBLE
                 binding.todayRecycleView.visibility = View.VISIBLE

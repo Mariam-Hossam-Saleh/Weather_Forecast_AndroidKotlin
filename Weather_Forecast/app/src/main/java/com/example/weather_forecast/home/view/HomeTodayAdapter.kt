@@ -36,7 +36,7 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
 //        holder.bind(getItem(position))
         Glide.with(context)
-            .load(getIconResId(weatherEntity.get(position).icon))
+            .load(getIconResId(weatherEntity.get(position).weatherIcon))
             .apply(
                 RequestOptions()
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -59,8 +59,8 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
             binding.apply {
                 time.text =  SimpleDateFormat("HH:mm", Locale.getDefault())
                     .format(Date(currentWeather.dt * 1000))
-                temp.text = "${currentWeather.temp}°C"
-                windSpeed.text = "${currentWeather.humidity}km/h"
+                temp.text = "${currentWeather.mainTemp}°C"
+                windSpeed.text = "${currentWeather.windSpeed}km/h"
 //                tvDescription.text = weather.weatherDescription
 //                tvHumidity.text = "Humidity: ${weather.humidity}%"
                 root.setOnClickListener {

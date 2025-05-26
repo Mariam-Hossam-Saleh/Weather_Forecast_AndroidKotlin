@@ -36,7 +36,7 @@ class WeatherRemoteDataSourceImp(
 
                 response.list.mapNotNull { weatherItem ->
                     try {
-                        weatherItem.toWeatherEntity(response.city.toString())
+                        weatherItem.toWeatherEntity(response.city,response.cod,response.cnt)
                     } catch (e: Exception) {
                         null
                     }
