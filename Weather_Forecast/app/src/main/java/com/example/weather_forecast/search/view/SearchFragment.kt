@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_forecast.MapActivity
 import com.example.weather_forecast.R
 import com.example.weather_forecast.databinding.FragmentSearchBinding
+import com.example.weather_forecast.home.view.HomeFragment.Companion.MAP_ACTIVITY_REQUEST_CODE
 import com.example.weather_forecast.model.database.WeatherDatabase
 import com.example.weather_forecast.model.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.model.network.RetrofitHelper
@@ -79,7 +80,7 @@ class SearchFragment : Fragment(), OnLocationClickListener {
             .setBackgroundResource(R.color.white)
 
         binding.btnMAP.setOnClickListener{
-//            openMapView
+            openMapActivity()
         }
     }
 
@@ -97,6 +98,16 @@ class SearchFragment : Fragment(), OnLocationClickListener {
     override fun onLocationClick(weather: WeatherEntity) {
         Toast.makeText(requireContext(), "Click Listener", Toast.LENGTH_SHORT).show()
 
+    }
+
+    // Add this method to your HomeFragment
+    private fun openMapActivity() {
+        val intent = Intent(requireContext(), MapActivity::class.java).apply {
+            // Pass current location if available
+            putExtra("latitude", 50.8978)
+            putExtra("longitude", 32.7769)
+        }
+        startActivityForResult(intent, MAP_ACTIVITY_REQUEST_CODE)
     }
 
 //    private fun openMapView(latitude: Double, longitude: Double, address: String) {

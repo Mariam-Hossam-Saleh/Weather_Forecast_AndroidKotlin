@@ -2,6 +2,8 @@ package com.example.weather_forecast.home.view
 
 import WeatherRemoteDataSourceImp
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.weather_forecast.MapActivity
 import com.example.weather_forecast.R
 import com.example.weather_forecast.databinding.FragmentHomeBinding
 import com.example.weather_forecast.home.viewmodel.HomeViewModel
@@ -51,6 +54,30 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private var lastLongitude: Double? = null
 
     private var shouldForceRefresh = true
+    // Add this constant at the top of your HomeFragment
+    public companion object {
+        const val MAP_ACTIVITY_REQUEST_CODE = 1001
+    }
+
+
+
+    // Add this method to handle the result
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == MAP_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            val latitude = data?.getDoubleExtra("latitude", 0.0) ?: return
+            val longitude = data?.getDoubleExtra("longitude", 0.0) ?: return
+
+            // Update location and fetch weather
+            lastLatitude = latitude
+            lastLongitude = longitude
+            homeViewModel.fetchWeather(latitude, longitude)
+            homeViewModel.fetchCurrentWeather(latitude, longitude)
+
+            // Prevent automatic refresh when returning
+            shouldForceRefresh = false
+        }
+    }
 
     override fun onResume() {
         super.onResume()
