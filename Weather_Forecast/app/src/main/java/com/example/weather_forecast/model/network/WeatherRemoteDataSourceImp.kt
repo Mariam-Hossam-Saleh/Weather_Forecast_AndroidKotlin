@@ -66,7 +66,7 @@ class WeatherRemoteDataSourceImp(
                     units = units
                 )
                 Log.d("WeatherRemoteDataSource", "Current weather forecast response: $response")
-                response.toCurrentWeatherEntity(response.cityName)
+                response.toCurrentWeatherEntity(response.name)
 
             } catch (e: Exception) {
                 throw Exception("Failed to fetch current weather", e)

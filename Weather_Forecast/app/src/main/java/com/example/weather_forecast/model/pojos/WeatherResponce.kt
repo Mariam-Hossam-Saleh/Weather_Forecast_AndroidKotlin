@@ -20,8 +20,8 @@ data class CurrentWeatherResponce(
     val dt: Long,
     val sys: Sys,
     val timezone: Int,
-    val cityId: Int,
-    val cityName: String,
+    val id: Int,
+    val name: String,
     val cod: Int) {
     companion object {
         // WeatherItem to WeatherEntity Mapper
@@ -55,8 +55,8 @@ data class CurrentWeatherResponce(
                 sysSunrise = sys.sunrise,
                 sysSunset = sys.sunset,
                 timezone = timezone,
-                cityId = cityId,
-                cityName = this.cityName ?: "Unknown",
+                cityId = id,
+                cityName = this.name,
                 cod = cod,
             )
         }
