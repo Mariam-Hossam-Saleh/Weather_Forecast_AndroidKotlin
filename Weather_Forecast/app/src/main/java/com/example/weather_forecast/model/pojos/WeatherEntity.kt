@@ -6,47 +6,14 @@ import com.example.weather_forecast.R
 @Entity(tableName = "weather_table", primaryKeys = ["dt", "cityName"])
 data class WeatherEntity(
     val dt: Long,
-    val cod: String,
-    val cnt: Int,
-    val dt_txt: String,
-    // Main,
-    val mainTemp: Double,
-    val mainFeels_like: Double,
-    val mainTemp_min: Double,
-    val mainTemp_max: Double,
-    val mainPressure: Int,
-    val mainHumidity: Int,
-    val mainSea_level: Int?,
-    val mainGrnd_level: Int?,
-    // Weather
-    val weatherId: Int,
+    val dateText: String,
+    val temp: Double,
+    val feelsLike: Double,
+    val humidity: Int,
     val weatherMain: String,
     val weatherDescription: String,
-    val weatherIcon: String,
-    // Cloud
-    val clouds: Int,
-    // Wind
-    val windSpeed: Double,
-    val windDeg: Int,
-    val windGust: Double?,
-    //visibility
-    val visibility: Int,
-    // Pop
-    val pop: Double,
-    // Rain?,
-    val rain: Double?,
-    // Sys
-    val sysPod: String?,
-    // City
-    val cityId: Int,
-    val cityName: String,
-    val cityCoordLon: Double,
-    val cityCoordLat: Double,
-    val cityCountry: String,
-    val cityPopulation: Int,
-    val cityTimezone: Int,
-    val citySunrise: Long,
-    val citySunset: Long
+    val icon: String,
+    val cityName: String
 )
 
 @Entity(tableName = "current_weather_table", primaryKeys = ["cityName"])
@@ -84,7 +51,7 @@ data class CurrentWeatherEntity(
     //Sys
     val sysType: Int?,
     val sysId: Int?,
-    val sysCountry: String?,
+    val sysCountry: String,
     val sysSunrise: Long,
     val sysSunset: Long,
 
