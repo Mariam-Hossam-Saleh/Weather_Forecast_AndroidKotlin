@@ -1,9 +1,9 @@
 package com.example.weather_forecast.home.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
@@ -18,8 +18,8 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
     private val _weatherList = MutableLiveData<List<WeatherEntity>>()
     val weatherList: LiveData<List<WeatherEntity>> = _weatherList
 
-    private val _todayWeather = MutableLiveData<CurrentWeatherEntity>()
-    val todayWeather: LiveData<CurrentWeatherEntity> = _todayWeather
+    private val _todayWeather = MutableLiveData<CurrentWeatherEntity?>()
+    val todayWeather: LiveData<CurrentWeatherEntity?> = _todayWeather
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -30,9 +30,11 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
     private val _favoriteState = MutableLiveData<WeatherEntity?>()
     val favoriteState: LiveData<WeatherEntity?> = _favoriteState
 
+    private val _favoriteToggleResult = MutableLiveData<Boolean?>()
+    val favoriteToggleResult: LiveData<Boolean?> = _favoriteToggleResult
+
     private val todayMidnight: ZonedDateTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault())
     private val unixTimeSeconds = todayMidnight.toEpochSecond()
-
 
     fun fetchWeather(lat: Double, lon: Double) {
         viewModelScope.launch {
@@ -46,9 +48,9 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     apiKey = "e82d172019ed90076e2ec824decb3d40"
                 )
                 _weatherList.value = result
-                Log.i("HomeViewModel", "Time: $unixTimeSeconds")
                 repo.clearOldWeather(unixTimeSeconds)
                 repo.insertWeatherList(result)
+//                getStoredCityWeather(lat, lon)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch weather: ${e.message}"
                 Log.e("HomeViewModel", "Error fetching weather", e)
@@ -58,12 +60,12 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
         }
     }
 
-    fun getStoredCityWeather(lat: Double,lon: Double) {
+    fun getStoredCityWeather(lat: Double, lon: Double) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val result = repo.getCityWeather(lat,lon)
+                val result = repo.getCityWeather(lat, lon)
                 _weatherList.value = result
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to get stored weather: ${e.message}"
@@ -88,6 +90,7 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                 _todayWeather.value = result
                 repo.clearCurrentWeather()
                 repo.insertCurrentWeather(result)
+//                getStoredCurrentWeather()
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch current weather: ${e.message}"
                 Log.e("HomeViewModel", "Error fetching current weather", e)
@@ -102,9 +105,7 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val result = repo.getCurrentWeather(
-                    isRemote = false
-                )
+                val result = repo.getCurrentWeather(isRemote = false)
                 _todayWeather.value = result
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to get stored current weather: ${e.message}"
@@ -121,19 +122,23 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
         }
     }
 
-    fun toggleFavoriteStatus(cityName: String, isFavorite: Boolean, lat: Double, lon: Double) {
+    fun toggleFavoriteStatus(cityName: String, lat: Double, lon: Double) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                repo.updateWeatherFavoriteStatus(cityName, !isFavorite)
-                // Refresh weather list
+                val currentFavorite = repo.getFavoriteStateForCity(cityName)
+                val newFavoriteStatus = currentFavorite?.isFavorite != true
+                repo.updateWeatherFavoriteStatus(cityName, newFavoriteStatus)
+                _favoriteState.value = repo.getFavoriteStateForCity(cityName)
+                _favoriteToggleResult.value = newFavoriteStatus // Notify fragment of the new status
                 _weatherList.value = repo.getCityWeather(lat, lon)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to update favorite status: ${e.message}"
                 Log.e("HomeViewModel", "Error updating favorite status", e)
             } finally {
                 _isLoading.value = false
+                _favoriteToggleResult.value = null // Reset to avoid repeated triggers
             }
         }
     }

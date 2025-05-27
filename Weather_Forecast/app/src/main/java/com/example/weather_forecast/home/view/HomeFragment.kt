@@ -58,7 +58,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        // Restore state or check arguments
         savedInstanceState?.let {
             lastLatitude = it.getDouble("lastLatitude", 0.0).takeIf { d -> d != 0.0 }
             lastLongitude = it.getDouble("lastLongitude", 0.0).takeIf { d -> d != 0.0 }
@@ -80,7 +79,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Initialize ViewModel
         homeViewModelFactory = HomeViewModelFactory(
             WeatherRepositoryImp.getInstance(
                 WeatherRemoteDataSourceImp(RetrofitHelper.service, requireContext()),
@@ -89,12 +87,10 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         )
         homeViewModel = ViewModelProvider(this, homeViewModelFactory)[HomeViewModel::class.java]
 
-        // Initialize LocationPermissionHandler
         locationHandler = LocationPermissionHandler(
             fragment = this,
             onLocationFetched = { latitude, longitude ->
                 Log.d("HomeFragment", "Location fetched: lat=$latitude, lon=$longitude")
-                // Only fetch current location data if not from SearchFragment and location has changed
                 if (!isFromSearchFragment && hasLocationChanged(latitude, longitude)) {
                     lastLatitude = latitude
                     lastLongitude = longitude
@@ -114,11 +110,9 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
         )
 
-        // Set up RecyclerView and observers
         setUpRecyclerView()
         setCurrentWeatherInfo()
 
-        // Handle entry based on source
         if (isFromSearchFragment && lastLatitude != null && lastLongitude != null) {
             fetchWeatherForLocation(lastLatitude!!, lastLongitude!!)
         } else {
@@ -135,11 +129,23 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         homeViewModel.favoriteState.observe(viewLifecycleOwner) { weatherEntity ->
             Log.d("HomeFragment", "Favorite state changed: $weatherEntity")
             if (weatherEntity != null) {
-                if (weatherEntity.isFavorite) {
-                    binding.btnFavorite.setImageResource(R.drawable.favourite_colored)
-                } else {
-                    binding.btnFavorite.setImageResource(R.drawable.favourite)
-                }
+                binding.btnFavorite.setImageResource(
+                    if (weatherEntity.isFavorite) R.drawable.favourite_colored
+                    else R.drawable.favourite
+                )
+            } else {
+                binding.btnFavorite.setImageResource(R.drawable.favourite)
+            }
+        }
+
+        homeViewModel.favoriteToggleResult.observe(viewLifecycleOwner) { isFavorite ->
+            isFavorite?.let {
+                Toast.makeText(
+                    requireContext(),
+                    if (it) "$currentCityName Added to Favorites"
+                    else "$currentCityName Removed from Favorites",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -160,32 +166,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             locationHandler.requestLocationPermission()
         }
 
-        // In onViewCreated
         binding.btnFavorite.setOnClickListener {
-            if (lastLatitude != null && lastLongitude != null) {
-                val isFavorite = homeViewModel.weatherList.value?.any { it.cityName == currentCityName && it.isFavorite } ?: false
-                homeViewModel.toggleFavoriteStatus(currentCityName!!, isFavorite,
-                    lastLatitude!!, lastLongitude!!
-                )
-                Toast.makeText(
-                    requireContext(),
-                    if (isFavorite){
-                        "Removed from favorites"
-                    } else {
-                        "Added to favorites"
-                    },
-                    Toast.LENGTH_SHORT
-                ).show()
+            if (lastLatitude != null && lastLongitude != null && currentCityName != null) {
+                homeViewModel.toggleFavoriteStatus(currentCityName!!, lastLatitude!!, lastLongitude!!)
             } else {
                 Toast.makeText(requireContext(), "No location selected", Toast.LENGTH_SHORT).show()
             }
         }
-
-//        homeViewModel.favoriteWeatherEntities.observe(viewLifecycleOwner) { favoriteWeather ->
-//            Log.d("HomeFragment", "Favorite weather entities: ${favoriteWeather.map { it.cityName to it.dt }}")
-//            // Update RecyclerView if using FavoriteCitiesAdapter
-//            // favoriteCitiesAdapter.submitList(favoriteWeather)
-//        }
 
         binding.settings.setOnClickListener {
             Log.d("HomeFragment", "Settings button clicked")
@@ -208,7 +195,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
     override fun onResume() {
         super.onResume()
-        // Only fetch current location if not coming from SearchFragment
         if (!isFromSearchFragment) {
             locationHandler.fetchCurrentLocation()
         }
@@ -292,7 +278,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             homeViewModel.fetchCurrentWeather(lat, lon)
         } else {
             Log.d("HomeFragment", "No network, attempting to show cached data")
-            homeViewModel.getStoredCityWeather(lat,lon)
+            homeViewModel.getStoredCityWeather(lat, lon)
             homeViewModel.getStoredCurrentWeather()
             Toast.makeText(
                 requireContext(),
