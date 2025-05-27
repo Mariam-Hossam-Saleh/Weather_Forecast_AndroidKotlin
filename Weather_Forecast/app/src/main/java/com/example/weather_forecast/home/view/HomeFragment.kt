@@ -52,47 +52,28 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private var lastLongitude: Double? = null
     private var isFromSearchFragment: Boolean = false
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putDouble("lastLatitude", lastLatitude ?: 0.0)
-        outState.putDouble("lastLongitude", lastLongitude ?: 0.0)
-        outState.putBoolean("isFromSearchFragment", isFromSearchFragment)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
-        arguments?.let {
-            lastLatitude = it.getDouble("selected_lat", 0.0)
-            lastLongitude = it.getDouble("selected_lon", 0.0)
-            isFromSearchFragment = lastLatitude != 0.0 && lastLongitude != 0.0
-        }
+        // Restore state or check arguments
         savedInstanceState?.let {
-            lastLatitude = it.getDouble("lastLatitude", lastLatitude ?: 0.0)
-            lastLongitude = it.getDouble("lastLongitude", lastLongitude ?: 0.0)
-            isFromSearchFragment = it.getBoolean("isFromSearchFragment", isFromSearchFragment)
+            lastLatitude = it.getDouble("lastLatitude", 0.0).takeIf { d -> d != 0.0 }
+            lastLongitude = it.getDouble("lastLongitude", 0.0).takeIf { d -> d != 0.0 }
+            isFromSearchFragment = it.getBoolean("isFromSearchFragment", false)
+        }
+        arguments?.let {
+            val selectedLat = it.getDouble("selected_lat", 0.0)
+            val selectedLon = it.getDouble("selected_lon", 0.0)
+            if (selectedLat != 0.0 && selectedLon != 0.0) {
+                isFromSearchFragment = true
+                lastLatitude = selectedLat
+                lastLongitude = selectedLon
+            }
         }
         return binding.root
     }
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View {
-//        binding = FragmentHomeBinding.inflate(inflater, container, false)
-//        // Check if coming from SearchFragment
-//        arguments?.let {
-//            val selectedLat = it.getDouble("selected_lat", 0.0)
-//            val selectedLon = it.getDouble("selected_lon", 0.0)
-//            if (selectedLat != 0.0 && selectedLon != 0.0) {
-//                isFromSearchFragment = true
-//                lastLatitude = selectedLat
-//                lastLongitude = selectedLon
-//            }
-//        }
-//        return binding.root
-//    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -112,8 +93,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             fragment = this,
             onLocationFetched = { latitude, longitude ->
                 Log.d("HomeFragment", "Location fetched: lat=$latitude, lon=$longitude")
-                // Only fetch current location data if not from SearchFragment
-                if (!isFromSearchFragment && (lastLatitude != latitude || lastLongitude != longitude)) {
+                // Only fetch current location data if not from SearchFragment and location has changed
+                if (!isFromSearchFragment && hasLocationChanged(latitude, longitude)) {
                     lastLatitude = latitude
                     lastLongitude = longitude
                     fetchWeatherForLocation(latitude, longitude)
@@ -188,15 +169,22 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
     override fun onResume() {
         super.onResume()
-        // Reset isFromSearchFragment and fetch current location
-        isFromSearchFragment = false
-        locationHandler.fetchCurrentLocation()
+        // Only fetch current location if not coming from SearchFragment
+        if (!isFromSearchFragment) {
+            locationHandler.fetchCurrentLocation()
+        }
     }
 
     override fun onStop() {
         super.onStop()
         lastLatitude = null
         lastLongitude = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putDouble("lastLatitude", lastLatitude ?: 0.0)
+        outState.putDouble("lastLongitude", lastLongitude ?: 0.0)
+        outState.putBoolean("isFromSearchFragment", isFromSearchFragment)
     }
 
     private fun setUpRecyclerView() {
@@ -246,6 +234,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         currentState.text = ""
                         currentDateAndTime.text = ""
                         imgIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.nowifi))
+                        todayRecycleView.visibility = View.GONE
+                        nextDaysRecycleView.visibility = View.GONE
                         requireActivity().findViewById<View>(R.id.app_bar_main)
                             .setBackgroundResource(R.drawable.clear1)
                     }
@@ -269,6 +259,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 Toast.LENGTH_LONG
             ).show()
         }
+    }
+
+    private fun hasLocationChanged(newLat: Double, newLon: Double): Boolean {
+        if (lastLatitude == null || lastLongitude == null) return true
+        val distance = FloatArray(1)
+        android.location.Location.distanceBetween(lastLatitude!!, lastLongitude!!, newLat, newLon, distance)
+        return distance[0] > 1000 // 1km threshold
     }
 
     override fun onWeatherClick(weather: WeatherEntity) {
