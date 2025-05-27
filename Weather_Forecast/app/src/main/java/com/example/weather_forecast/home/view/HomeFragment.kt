@@ -162,9 +162,11 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
         // In onViewCreated
         binding.btnFavorite.setOnClickListener {
-            if (lastLatitude != null) {
+            if (lastLatitude != null && lastLongitude != null) {
                 val isFavorite = homeViewModel.weatherList.value?.any { it.cityName == currentCityName && it.isFavorite } ?: false
-                homeViewModel.toggleFavoriteStatus(currentCityName!!, isFavorite)
+                homeViewModel.toggleFavoriteStatus(currentCityName!!, isFavorite,
+                    lastLatitude!!, lastLongitude!!
+                )
                 Toast.makeText(
                     requireContext(),
                     if (isFavorite){
@@ -181,11 +183,11 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
         }
 
-        homeViewModel.favoriteWeatherEntities.observe(viewLifecycleOwner) { favoriteWeather ->
-            Log.d("HomeFragment", "Favorite weather entities: ${favoriteWeather.map { it.cityName to it.dt }}")
-            // Update RecyclerView if using FavoriteCitiesAdapter
-            // favoriteCitiesAdapter.submitList(favoriteWeather)
-        }
+//        homeViewModel.favoriteWeatherEntities.observe(viewLifecycleOwner) { favoriteWeather ->
+//            Log.d("HomeFragment", "Favorite weather entities: ${favoriteWeather.map { it.cityName to it.dt }}")
+//            // Update RecyclerView if using FavoriteCitiesAdapter
+//            // favoriteCitiesAdapter.submitList(favoriteWeather)
+//        }
 
         binding.settings.setOnClickListener {
             Log.d("HomeFragment", "Settings button clicked")
@@ -292,11 +294,11 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             homeViewModel.fetchCurrentWeather(lat, lon)
         } else {
             Log.d("HomeFragment", "No network, attempting to show cached data")
-            homeViewModel.getStoredWeather()
+            homeViewModel.getStoredCityWeather(lat,lon)
             homeViewModel.getStoredCurrentWeather()
             Toast.makeText(
                 requireContext(),
-                "No internet connection. Showing cached data.",
+                "No internet connection. Showing last update.",
                 Toast.LENGTH_LONG
             ).show()
         }

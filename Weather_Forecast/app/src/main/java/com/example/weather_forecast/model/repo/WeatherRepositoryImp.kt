@@ -30,7 +30,7 @@ class WeatherRepositoryImp (
         weatherLocalDataSource.insertCurrentWeather(CurrentWeather)
     }
 
-    override suspend fun getAllWeather(
+    override suspend fun getWeatherForecast(
         isRemote: Boolean,
         lat: Double,
         lon: Double,
@@ -56,6 +56,10 @@ class WeatherRepositoryImp (
         else {
             weatherLocalDataSource.getCurrentWeather()
         }
+    }
+
+    override suspend fun getCityWeather(lat: Double,lon: Double): List<WeatherEntity>{
+        return weatherLocalDataSource.getCityWeather(lat,lon)
     }
 
     override suspend fun clearOldWeather(timestamp: Long) {

@@ -11,8 +11,8 @@ import kotlinx.coroutines.launch
 
 class SearchViewModel(private val repo: WeatherRepository) : ViewModel() {
 
-    private val _weatherList = MutableLiveData<List<WeatherEntity>>()
-    val weatherList: LiveData<List<WeatherEntity>> = _weatherList
+    private val _favoriteWeatherEntities = MutableLiveData<List<WeatherEntity>>()
+    val favoriteWeatherEntities: LiveData<List<WeatherEntity>> = _favoriteWeatherEntities
 
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
@@ -20,43 +20,16 @@ class SearchViewModel(private val repo: WeatherRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-
-    fun fetchWeather(lat: Double, lon: Double) {
+    fun getFavoriteWeatherEntities() {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val result = repo.getAllWeather(
-                    isRemote = true,
-                    lat = lat,
-                    lon = lon,
-                    apiKey = "e82d172019ed90076e2ec824decb3d40"
-//                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
-                )
-                _weatherList.value = result
-//                repo.clearOldWeather()
-                repo.insertWeatherList(result)
+                val result = repo.getFavoriteWeatherEntities()
+                _favoriteWeatherEntities.value = result
             } catch (e: Exception) {
-                _errorMessage.value = "Failed to fetch weather: ${e.message}"
-                Log.e("HomeViewModel", "Error fetching weather", e)
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun getStoredWeather() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _errorMessage.value = null
-            try {
-                val result = repo.getAllWeather(
-                    isRemote = false,
-                )
-                _weatherList.value = result
-            } catch (e: Exception) {
-                _errorMessage.value = "Failed to get stored weather: ${e.message}"
-                Log.e("HomeViewModel", "Error getting stored weather", e)
+                _errorMessage.value = "Failed to fetch favorite weather entities: ${e.message}"
+                Log.e("HomeViewModel", "Error fetching favorite weather entities", e)
             } finally {
                 _isLoading.value = false
             }

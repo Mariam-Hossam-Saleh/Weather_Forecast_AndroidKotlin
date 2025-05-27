@@ -6,6 +6,8 @@ import com.example.weather_forecast.R
 @Entity(tableName = "weather_table", primaryKeys = ["dt", "cityName"])
 data class WeatherEntity(
     val dt: Long,
+    val lat: Double,
+    val lon: Double,
     val cod: String,
     val cnt: Int,
     val dt_txt: String,

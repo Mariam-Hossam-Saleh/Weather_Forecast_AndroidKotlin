@@ -15,10 +15,12 @@ data class WeatherItem(
 ) {
     companion object {
         // WeatherItem to WeatherEntity Mapper
-        fun WeatherItem.toWeatherEntity(city: City, cod: String, cnt: Int): WeatherEntity {
+        fun WeatherItem.toWeatherEntity(city: City, cod: String, cnt: Int,lat: Double, lon:Double): WeatherEntity {
             val firstWeather = weather.firstOrNull()
             return WeatherEntity(
                 dt = dt,
+                lat = lat,
+                lon = lon,
                 cod = cod,
                 cnt = cnt,
                 dt_txt = dt_txt,

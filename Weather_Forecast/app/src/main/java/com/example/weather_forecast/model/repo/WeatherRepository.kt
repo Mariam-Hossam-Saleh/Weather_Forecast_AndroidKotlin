@@ -8,7 +8,7 @@ interface WeatherRepository {
 
     suspend fun insertCurrentWeather(CurrentWeather: CurrentWeatherEntity)
 
-    suspend fun getAllWeather(
+    suspend fun getWeatherForecast(
         isRemote: Boolean,
         lat: Double = 0.0,
         lon: Double = 0.0,
@@ -21,6 +21,8 @@ interface WeatherRepository {
         lon: Double = 0.0,
         apiKey: String = ""
     ): CurrentWeatherEntity
+
+    suspend fun getCityWeather(lat: Double,lon: Double): List<WeatherEntity>
 
     suspend fun clearOldWeather(timestamp: Long)
 

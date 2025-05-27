@@ -27,9 +27,6 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
-    private val _favoriteWeatherEntities = MutableLiveData<List<WeatherEntity>>()
-    val favoriteWeatherEntities: LiveData<List<WeatherEntity>> = _favoriteWeatherEntities
-
     private val _favoriteState = MutableLiveData<WeatherEntity?>()
     val favoriteState: LiveData<WeatherEntity?> = _favoriteState
 
@@ -42,7 +39,7 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val result = repo.getAllWeather(
+                val result = repo.getWeatherForecast(
                     isRemote = true,
                     lat = lat,
                     lon = lon,
@@ -61,14 +58,12 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
         }
     }
 
-    fun getStoredWeather() {
+    fun getStoredCityWeather(lat: Double,lon: Double) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val result = repo.getAllWeather(
-                    isRemote = false
-                )
+                val result = repo.getCityWeather(lat,lon)
                 _weatherList.value = result
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to get stored weather: ${e.message}"
@@ -126,35 +121,17 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
         }
     }
 
-    fun toggleFavoriteStatus(cityName: String, isFavorite: Boolean) {
+    fun toggleFavoriteStatus(cityName: String, isFavorite: Boolean, lat: Double, lon: Double) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
                 repo.updateWeatherFavoriteStatus(cityName, !isFavorite)
                 // Refresh weather list
-                _weatherList.value = repo.getAllWeather(isRemote = false)
-                // Refresh favorite entities
-                _favoriteWeatherEntities.value = repo.getFavoriteWeatherEntities()
+                _weatherList.value = repo.getCityWeather(lat, lon)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to update favorite status: ${e.message}"
                 Log.e("HomeViewModel", "Error updating favorite status", e)
-            } finally {
-                _isLoading.value = false
-            }
-        }
-    }
-
-    fun fetchFavoriteWeatherEntities() {
-        viewModelScope.launch {
-            _isLoading.value = true
-            _errorMessage.value = null
-            try {
-                val result = repo.getFavoriteWeatherEntities()
-                _favoriteWeatherEntities.value = result
-            } catch (e: Exception) {
-                _errorMessage.value = "Failed to fetch favorite weather entities: ${e.message}"
-                Log.e("HomeViewModel", "Error fetching favorite weather entities", e)
             } finally {
                 _isLoading.value = false
             }

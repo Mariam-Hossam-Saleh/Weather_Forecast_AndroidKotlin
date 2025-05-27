@@ -69,6 +69,7 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         setupViewModel()
         setUpRecyclerView()
         setupUI()
+        searchViewModel.getFavoriteWeatherEntities()
     }
 
     private fun setupViewModel() {
@@ -93,7 +94,8 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         searchRecyclerView.setHasFixedSize(true)
         searchRecyclerView.adapter = searchAdapter
         searchRecyclerView.layoutManager = searchLayoutManager
-        searchViewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
+
+        searchViewModel.favoriteWeatherEntities.observe(viewLifecycleOwner) { weatherList ->
             searchAdapter.weatherEntity = weatherList ?: emptyList()
             searchAdapter.notifyDataSetChanged()
         }
