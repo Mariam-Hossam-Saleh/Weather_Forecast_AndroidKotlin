@@ -47,7 +47,7 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     lon = lon,
                     apiKey = "e82d172019ed90076e2ec824decb3d40"
                 )
-                _weatherList.value = result
+//                _weatherList.value = result
                 repo.clearOldWeather(unixTimeSeconds)
                 repo.insertWeatherList(result)
 //                getStoredCityWeather(lat, lon)
@@ -153,6 +153,22 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch favorite state for city: ${e.message}"
                 Log.e("HomeViewModel", "Error fetching favorite state for city", e)
+            } finally {
+                _isLoading.value = false
+            }
+        }
+    }
+
+    fun getDailyWeatherByCity(cityName: String) {
+        viewModelScope.launch {
+            _isLoading.value = true
+            _errorMessage.value = null
+            try {
+                val result = repo.getDailyWeatherByCity(cityName)
+                _weatherList.value = result
+            } catch (e: Exception) {
+                _errorMessage.value = "Failed to get stored weather: ${e.message}"
+                Log.e("HomeViewModel", "Error getting stored weather", e)
             } finally {
                 _isLoading.value = false
             }

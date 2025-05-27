@@ -50,4 +50,13 @@ interface WeatherDao {
         ORDER BY dt ASC
     """)
     suspend fun getFavoriteWeatherEntities(): List<WeatherEntity>
+
+    @Query("""
+    SELECT * FROM weather_table
+    WHERE cityName = :cityName
+    GROUP BY SUBSTR(dt_txt, 1, 10)
+    ORDER BY dt ASC
+""")
+    suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity>
+
 }

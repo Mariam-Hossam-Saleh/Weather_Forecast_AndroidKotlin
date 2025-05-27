@@ -69,13 +69,3 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
         }
     }
 }
-
-//class WeatherDiffCallback : DiffUtil.ItemCallback<WeatherEntity>() {
-//    override fun areItemsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
-//        return oldItem.dt == newItem.dt
-//    }
-//
-//    override fun areContentsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
-//        return oldItem == newItem
-//    }
-//}

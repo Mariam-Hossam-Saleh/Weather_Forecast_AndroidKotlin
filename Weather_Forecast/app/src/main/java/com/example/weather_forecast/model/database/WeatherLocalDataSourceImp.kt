@@ -47,4 +47,8 @@ class WeatherLocalDataSourceImp(private val dao: WeatherDao) : WeatherLocalDataS
     override suspend fun getFavoriteWeatherEntities(): List<WeatherEntity> {
         return dao.getFavoriteWeatherEntities()
     }
+
+    override suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity> {
+        return dao.getDailyWeatherByCity(cityName)
+    }
 }

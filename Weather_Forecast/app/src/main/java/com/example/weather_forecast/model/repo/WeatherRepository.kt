@@ -36,4 +36,6 @@ interface WeatherRepository {
 
     suspend fun getFavoriteStateForCity(cityName: String): WeatherEntity
 
+    suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity>
+
 }

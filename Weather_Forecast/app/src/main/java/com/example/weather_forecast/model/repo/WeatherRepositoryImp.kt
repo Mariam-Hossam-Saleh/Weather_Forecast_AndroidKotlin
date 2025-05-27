@@ -86,4 +86,8 @@ class WeatherRepositoryImp (
         return weatherLocalDataSource.getFavoriteStateForCity(cityName)
     }
 
+    override suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity> {
+        return weatherLocalDataSource.getDailyWeatherByCity(cityName)
+    }
+
 }

@@ -27,4 +27,6 @@ interface WeatherLocalDataSource {
 
     suspend fun getFavoriteWeatherEntities(): List<WeatherEntity>
 
+    suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity>
+
 }
