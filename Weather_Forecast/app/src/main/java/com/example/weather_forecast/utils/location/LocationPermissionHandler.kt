@@ -153,12 +153,12 @@ class LocationPermissionHandler(
             }
             .addOnFailureListener { exception ->
                 Log.e("LocationPermissionHandler", "Failed to get location: ${exception.message}")
-                Toast.makeText(
-                    context,
-                    "Failed to get location. Using default location (Cairo).",
-                    Toast.LENGTH_SHORT
-                ).show()
-                onLocationFetched.invoke(30.0444, 31.2357) // Cairo coordinates
+//                Toast.makeText(
+//                    context,
+//                    "Failed to get location. Using default location (Cairo).",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//                onLocationFetched.invoke(30.0444, 31.2357) // Cairo coordinates
             }
     }
 

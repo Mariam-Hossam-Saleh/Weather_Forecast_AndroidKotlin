@@ -19,7 +19,7 @@
             android:layout_height="200dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="50dp"
             android:visibility="gone"
             app:cardBackgroundColor="@color/semi_transparent">
 
@@ -56,6 +56,7 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:cardElevation="4dp"
+            android:layout_marginTop="50dp"
             app:cardCornerRadius="8dp">
 
             <LinearLayout
@@ -118,7 +119,6 @@
                     android:id="@+id/currentState"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Weather"
                     android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp"
                     android:textColor="@color/white"
@@ -142,7 +142,6 @@
                     android:id="@+id/currentDateAndTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Current Date and Time"
                     android:layout_marginTop="10dp"
                     android:textColor="@color/white"
                     android:textSize="24dp"/>

@@ -2,8 +2,6 @@ package com.example.weather_forecast.home.view
 
 import WeatherRemoteDataSourceImp
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
@@ -11,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
@@ -21,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
-import com.example.weather_forecast.MapActivity
 import com.example.weather_forecast.R
 import com.example.weather_forecast.databinding.FragmentHomeBinding
 import com.example.weather_forecast.home.viewmodel.HomeViewModel
@@ -52,45 +50,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private lateinit var locationHandler: LocationPermissionHandler
     private var lastLatitude: Double? = null
     private var lastLongitude: Double? = null
+    private var isFromSearchFragment: Boolean = false
 
-    private var shouldForceRefresh = true
-    // Add this constant at the top of your HomeFragment
-    public companion object {
-        const val MAP_ACTIVITY_REQUEST_CODE = 1001
-    }
-
-
-
-    // Add this method to handle the result
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == MAP_ACTIVITY_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val latitude = data?.getDoubleExtra("latitude", 0.0) ?: return
-            val longitude = data?.getDoubleExtra("longitude", 0.0) ?: return
-
-            // Update location and fetch weather
-            lastLatitude = latitude
-            lastLongitude = longitude
-            homeViewModel.fetchWeather(latitude, longitude)
-            homeViewModel.fetchCurrentWeather(latitude, longitude)
-
-            // Prevent automatic refresh when returning
-            shouldForceRefresh = false
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if(shouldForceRefresh){
-            locationHandler.fetchCurrentLocation()
-        }
-        shouldForceRefresh = true
-    }
-
-    override fun onPause() {
-        super.onPause()
-        lastLatitude = null
-        lastLongitude = null
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putDouble("lastLatitude", lastLatitude ?: 0.0)
+        outState.putDouble("lastLongitude", lastLongitude ?: 0.0)
+        outState.putBoolean("isFromSearchFragment", isFromSearchFragment)
     }
 
     override fun onCreateView(
@@ -98,8 +64,35 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(inflater, container, false)
+        arguments?.let {
+            lastLatitude = it.getDouble("selected_lat", 0.0)
+            lastLongitude = it.getDouble("selected_lon", 0.0)
+            isFromSearchFragment = lastLatitude != 0.0 && lastLongitude != 0.0
+        }
+        savedInstanceState?.let {
+            lastLatitude = it.getDouble("lastLatitude", lastLatitude ?: 0.0)
+            lastLongitude = it.getDouble("lastLongitude", lastLongitude ?: 0.0)
+            isFromSearchFragment = it.getBoolean("isFromSearchFragment", isFromSearchFragment)
+        }
         return binding.root
     }
+//    override fun onCreateView(
+//        inflater: LayoutInflater, container: ViewGroup?,
+//        savedInstanceState: Bundle?
+//    ): View {
+//        binding = FragmentHomeBinding.inflate(inflater, container, false)
+//        // Check if coming from SearchFragment
+//        arguments?.let {
+//            val selectedLat = it.getDouble("selected_lat", 0.0)
+//            val selectedLon = it.getDouble("selected_lon", 0.0)
+//            if (selectedLat != 0.0 && selectedLon != 0.0) {
+//                isFromSearchFragment = true
+//                lastLatitude = selectedLat
+//                lastLongitude = selectedLon
+//            }
+//        }
+//        return binding.root
+//    }
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -119,25 +112,11 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             fragment = this,
             onLocationFetched = { latitude, longitude ->
                 Log.d("HomeFragment", "Location fetched: lat=$latitude, lon=$longitude")
-                // Only fetch if location changed or we need force refresh
-                if (lastLatitude != latitude || lastLongitude != longitude || shouldForceRefresh) {
+                // Only fetch current location data if not from SearchFragment
+                if (!isFromSearchFragment && (lastLatitude != latitude || lastLongitude != longitude)) {
                     lastLatitude = latitude
                     lastLongitude = longitude
-
-                    if (NetworkUtils.isNetworkAvailable(requireContext())) {
-                        Log.d("HomeFragment", "Network available, fetching fresh data")
-                        homeViewModel.fetchWeather(latitude, longitude)
-                        homeViewModel.fetchCurrentWeather(latitude, longitude)
-                    } else {
-                        Log.d("HomeFragment", "No network, showing cached data")
-                        homeViewModel.getStoredWeather()
-                        homeViewModel.getStoredCurrentWeather()
-                        Toast.makeText(
-                            requireContext(),
-                            "No internet connection. Showing cached data.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
+                    fetchWeatherForLocation(latitude, longitude)
                 }
                 binding.cardAllowLocation.visibility = View.GONE
                 binding.cardView.visibility = View.VISIBLE
@@ -157,6 +136,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         setUpRecyclerView()
         setCurrentWeatherInfo()
 
+        // Handle entry based on source
+        if (isFromSearchFragment && lastLatitude != null && lastLongitude != null) {
+            fetchWeatherForLocation(lastLatitude!!, lastLongitude!!)
+        } else {
+            locationHandler.requestLocationPermission()
+        }
+
         homeViewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
             homeWeatherAdapter.weatherEntity = weatherList ?: emptyList()
             homeTodayAdapter.weatherEntity = weatherList ?: emptyList()
@@ -168,16 +154,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
                 Log.e("HomeFragment", "Error: $it")
-
-                binding.cardAllowLocation.visibility = View.GONE
-                binding.cardView.visibility = View.VISIBLE
-                binding.todayRecycleView.visibility = View.VISIBLE
-                binding.nextDaysRecycleView.visibility = View.VISIBLE
             }
         }
-
-        // Request location permission
-        locationHandler.requestLocationPermission()
 
         binding.btnEnableLocation.setOnClickListener {
             Log.d("HomeFragment", "Enable Location button clicked")
@@ -193,17 +171,32 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             Log.d("HomeFragment", "Settings button clicked")
             val navController = NavHostFragment.findNavController(this@HomeFragment)
             navController.navigate(R.id.action_nav_home_to_nav_settings)
-
             Toast.makeText(requireContext(), "Settings Clicked", Toast.LENGTH_SHORT).show()
         }
 
         binding.search.setOnClickListener {
-            Log.d("HomeFragment", "Settings button clicked")
+            Log.d("HomeFragment", "Search button clicked")
+            val bundle = Bundle().apply {
+                putDouble("selected_lat", lastLatitude ?: 0.0)
+                putDouble("selected_lon", lastLongitude ?: 0.0)
+            }
             val navController = NavHostFragment.findNavController(this@HomeFragment)
-            navController.navigate(R.id.action_nav_home_to_nav_search)
-
+            navController.navigate(R.id.action_nav_home_to_nav_search, bundle)
             Toast.makeText(requireContext(), "Search Clicked", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Reset isFromSearchFragment and fetch current location
+        isFromSearchFragment = false
+        locationHandler.fetchCurrentLocation()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        lastLatitude = null
+        lastLongitude = null
     }
 
     private fun setUpRecyclerView() {
@@ -224,6 +217,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         homeTodayRecyclerView.layoutManager = homeTodayLayoutManager
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setCurrentWeatherInfo() {
         homeViewModel.todayWeather.observe(viewLifecycleOwner) { currentWeather ->
             if (currentWeather != null) {
@@ -245,25 +239,39 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         .setBackgroundResource(getWeatherStateResId(currentWeather.weatherMain))
                 }
             } else {
-                Log.d("HomeFragment", "Current weather is null, skipping UI update")
-                binding.apply {
-                    currentTemp.text = "N/A"
-                    currentState.text = "N/A"
-                    imgIcon.setImageDrawable(null)
-                    requireActivity().findViewById<View>(R.id.app_bar_main)
-                        .setBackgroundResource(R.drawable.clear1) // Use a default background
+                Log.d("HomeFragment", "Current weather is null")
+                if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+                    binding.apply {
+                        currentTemp.text = "No Network"
+                        currentState.text = ""
+                        currentDateAndTime.text = ""
+                        imgIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.nowifi))
+                        requireActivity().findViewById<View>(R.id.app_bar_main)
+                            .setBackgroundResource(R.drawable.clear1)
+                    }
                 }
             }
         }
     }
 
-    override fun onWeatherClick(weather: WeatherEntity) {
-        Toast.makeText(requireContext(), "Click Listener", Toast.LENGTH_SHORT).show()
+    private fun fetchWeatherForLocation(lat: Double, lon: Double) {
+        if (NetworkUtils.isNetworkAvailable(requireContext())) {
+            Log.d("HomeFragment", "Network available, fetching fresh data for lat=$lat, lon=$lon")
+            homeViewModel.fetchWeather(lat, lon)
+            homeViewModel.fetchCurrentWeather(lat, lon)
+        } else {
+            Log.d("HomeFragment", "No network, attempting to show cached data")
+            homeViewModel.getStoredWeather()
+            homeViewModel.getStoredCurrentWeather()
+            Toast.makeText(
+                requireContext(),
+                "No internet connection. Showing cached data.",
+                Toast.LENGTH_LONG
+            ).show()
+        }
     }
 
-    override fun onStop() {
-        super.onStop()
-        lastLatitude = null
-        lastLongitude = null
+    override fun onWeatherClick(weather: WeatherEntity) {
+        Toast.makeText(requireContext(), "Click Listener", Toast.LENGTH_SHORT).show()
     }
 }
