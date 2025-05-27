@@ -13,8 +13,16 @@ interface WeatherLocalDataSource {
 
     suspend fun getCurrentWeather(): CurrentWeatherEntity
 
-    suspend fun clearWeather()
+    suspend fun clearOldWeather(timestamp: Long)
 
     suspend fun clearCurrentWeather()
+
+    suspend fun getFavoriteStateForCity(cityName: String): WeatherEntity
+
+    suspend fun updateWeatherFavoriteStatus(cityName: String, isFavorite: Boolean)
+
+    suspend fun getFavoriteWeatherForCity(cityName: String): List<WeatherEntity>
+
+    suspend fun getFavoriteWeatherEntities(): List<WeatherEntity>
 
 }

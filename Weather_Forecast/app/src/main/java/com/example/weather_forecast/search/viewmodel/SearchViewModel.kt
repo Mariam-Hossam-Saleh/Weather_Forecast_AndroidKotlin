@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import android.util.Log
 import androidx.lifecycle.viewModelScope
-import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.repo.WeatherRepository
 import kotlinx.coroutines.launch
@@ -35,7 +34,7 @@ class SearchViewModel(private val repo: WeatherRepository) : ViewModel() {
 //                    apiKey = "4dc586435c64d43d0d6e2ba439393672"
                 )
                 _weatherList.value = result
-                repo.clearWeather()
+//                repo.clearOldWeather()
                 repo.insertWeatherList(result)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch weather: ${e.message}"

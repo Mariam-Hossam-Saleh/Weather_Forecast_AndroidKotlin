@@ -50,6 +50,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private lateinit var locationHandler: LocationPermissionHandler
     private var lastLatitude: Double? = null
     private var lastLongitude: Double? = null
+    private var currentCityName: String? = null
     private var isFromSearchFragment: Boolean = false
 
     override fun onCreateView(
@@ -131,6 +132,17 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             homeTodayAdapter.notifyDataSetChanged()
         }
 
+        homeViewModel.favoriteState.observe(viewLifecycleOwner) { weatherEntity ->
+            Log.d("HomeFragment", "Favorite state changed: $weatherEntity")
+            if (weatherEntity != null) {
+                if (weatherEntity.isFavorite) {
+                    binding.btnFavorite.setImageResource(R.drawable.favourite_colored)
+                } else {
+                    binding.btnFavorite.setImageResource(R.drawable.favourite)
+                }
+            }
+        }
+
         homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
             error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
@@ -146,6 +158,33 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         binding.btnRequestLocation.setOnClickListener {
             Log.d("HomeFragment", "Enable Location services button clicked")
             locationHandler.requestLocationPermission()
+        }
+
+        // In onViewCreated
+        binding.btnFavorite.setOnClickListener {
+            if (lastLatitude != null) {
+                val isFavorite = homeViewModel.weatherList.value?.any { it.cityName == currentCityName && it.isFavorite } ?: false
+                homeViewModel.toggleFavoriteStatus(currentCityName!!, isFavorite)
+                Toast.makeText(
+                    requireContext(),
+                    if (isFavorite){
+                        binding.btnFavorite.setImageResource(R.drawable.favourite)
+                        "Removed from favorites"
+                    } else {
+                        binding.btnFavorite.setImageResource(R.drawable.favourite_colored)
+                        "Added to favorites"
+                    },
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(requireContext(), "No location selected", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        homeViewModel.favoriteWeatherEntities.observe(viewLifecycleOwner) { favoriteWeather ->
+            Log.d("HomeFragment", "Favorite weather entities: ${favoriteWeather.map { it.cityName to it.dt }}")
+            // Update RecyclerView if using FavoriteCitiesAdapter
+            // favoriteCitiesAdapter.submitList(favoriteWeather)
         }
 
         binding.settings.setOnClickListener {
@@ -208,6 +247,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     @SuppressLint("SetTextI18n")
     private fun setCurrentWeatherInfo() {
         homeViewModel.todayWeather.observe(viewLifecycleOwner) { currentWeather ->
+            currentCityName = currentWeather?.cityName ?: "Unknown City"
+            homeViewModel.fetchFavoriteStateForCity(currentCityName!!)
             if (currentWeather != null) {
                 binding.apply {
                     currentTemp.text = "${currentWeather.mainTemp}°C"
@@ -272,3 +313,15 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         Toast.makeText(requireContext(), "Click Listener", Toast.LENGTH_SHORT).show()
     }
 }
+
+//if (weather.isFavorite) {
+//    imageView.setImageResource(R.drawable.favourite)
+//    mealsPresenter.removeMealFromFavourite(meal)
+//    Toast.makeText(getActivity(), "Removed from favorite successfully!", Toast.LENGTH_SHORT).show()
+//    meal.isFavorite = false
+//} else {
+//    imageView.setImageResource(R.drawable.favourite_colored)
+//    mealsPresenter.addMealToFavourite(meal)
+//    Toast.makeText(getActivity(), "Added to favorite successfully!", Toast.LENGTH_SHORT).show()
+//    meal.isFavorite = true
+//}

@@ -90,7 +90,14 @@
             app:cardElevation="0dp"
             android:layout_marginTop="20dp"
             app:cardBackgroundColor="@android:color/transparent">
-
+            <ImageView
+                android:id="@+id/btnFavorite"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="top|end"
+                android:layout_marginTop="350dp"
+                android:layout_marginEnd="20dp"
+                app:srcCompat="@drawable/favourite" />
             <ImageView
                 android:id="@+id/settings"
                 android:layout_width="20dp"
@@ -107,6 +114,7 @@
                 android:layout_margin="10dp"
                 app:srcCompat="@drawable/plus"
                 />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

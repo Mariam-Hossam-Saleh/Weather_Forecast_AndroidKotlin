@@ -58,11 +58,28 @@ class WeatherRepositoryImp (
         }
     }
 
-    override suspend fun clearWeather() {
-        weatherLocalDataSource.clearWeather()
+    override suspend fun clearOldWeather(timestamp: Long) {
+        weatherLocalDataSource.clearOldWeather(timestamp)
     }
 
     override suspend fun clearCurrentWeather() {
         weatherLocalDataSource.clearCurrentWeather()
     }
+
+    override suspend fun updateWeatherFavoriteStatus(cityName: String, isFavorite: Boolean) {
+        weatherLocalDataSource.updateWeatherFavoriteStatus(cityName, isFavorite)
+    }
+
+    override suspend fun getFavoriteWeatherForCity(cityName: String): List<WeatherEntity> {
+        return weatherLocalDataSource.getFavoriteWeatherForCity(cityName)
+    }
+
+    override suspend fun getFavoriteWeatherEntities(): List<WeatherEntity> {
+        return weatherLocalDataSource.getFavoriteWeatherEntities()
+    }
+
+    override suspend fun getFavoriteStateForCity(cityName: String): WeatherEntity {
+        return weatherLocalDataSource.getFavoriteStateForCity(cityName)
+    }
+
 }

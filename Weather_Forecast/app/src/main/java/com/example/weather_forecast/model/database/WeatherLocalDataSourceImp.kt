@@ -20,11 +20,27 @@ class WeatherLocalDataSourceImp(private val dao: WeatherDao) : WeatherLocalDataS
         return dao.getCurrentWeather()
     }
 
-    override suspend fun clearWeather() {
-        dao.clearWeather()
+    override suspend fun clearOldWeather(timestamp: Long) {
+        dao.clearOldWeather(timestamp)
     }
 
     override suspend fun clearCurrentWeather() {
         dao.clearCurrentWeather()
+    }
+
+    override suspend fun getFavoriteStateForCity(cityName: String): WeatherEntity {
+        return dao.getFavoriteStateForCity(cityName)
+    }
+
+    override suspend fun updateWeatherFavoriteStatus(cityName: String, isFavorite: Boolean) {
+            return dao.updateWeatherFavoriteStatus(cityName, isFavorite)
+    }
+
+    override suspend fun getFavoriteWeatherForCity(cityName: String): List<WeatherEntity> {
+        return dao.getFavoriteWeatherForCity(cityName)
+    }
+
+    override suspend fun getFavoriteWeatherEntities(): List<WeatherEntity> {
+        return dao.getFavoriteWeatherEntities()
     }
 }

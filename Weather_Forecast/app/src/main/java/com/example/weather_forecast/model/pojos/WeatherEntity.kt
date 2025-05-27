@@ -46,7 +46,8 @@ data class WeatherEntity(
     val cityPopulation: String,
     val cityTimezone: String,
     val citySunrise: String,
-    val citySunset: String
+    val citySunset: String,
+    val isFavorite: Boolean = false
 )
 
 @Entity(tableName = "current_weather_table", primaryKeys = ["cityName"])
