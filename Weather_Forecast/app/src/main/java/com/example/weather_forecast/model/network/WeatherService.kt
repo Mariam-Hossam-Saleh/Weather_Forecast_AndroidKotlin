@@ -11,7 +11,8 @@ interface WeatherService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric" // for Celsius
+        @Query("units") units: String = "metric",  // Celsius by default
+        @Query("lang") count: String = "en"        // English by default
     ): WeatherResponse
 
     @GET("weather")
@@ -19,6 +20,7 @@ interface WeatherService {
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
         @Query("appid") apiKey: String,
-        @Query("units") units: String = "metric" // for Celsius
+        @Query("units") units: String = "metric",  // Celsius by default
+        @Query("lang") count: String = "en"        // English by default
     ): CurrentWeatherResponce
 }

@@ -170,10 +170,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 Toast.makeText(
                     requireContext(),
                     if (isFavorite){
-                        binding.btnFavorite.setImageResource(R.drawable.favourite)
                         "Removed from favorites"
                     } else {
-                        binding.btnFavorite.setImageResource(R.drawable.favourite_colored)
                         "Added to favorites"
                     },
                     Toast.LENGTH_SHORT
@@ -204,7 +202,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
             val navController = NavHostFragment.findNavController(this@HomeFragment)
             navController.navigate(R.id.action_nav_home_to_nav_search, bundle)
-            Toast.makeText(requireContext(), "Search Clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "Manage your cities", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -315,15 +313,3 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         Toast.makeText(requireContext(), "Click Listener", Toast.LENGTH_SHORT).show()
     }
 }
-
-//if (weather.isFavorite) {
-//    imageView.setImageResource(R.drawable.favourite)
-//    mealsPresenter.removeMealFromFavourite(meal)
-//    Toast.makeText(getActivity(), "Removed from favorite successfully!", Toast.LENGTH_SHORT).show()
-//    meal.isFavorite = false
-//} else {
-//    imageView.setImageResource(R.drawable.favourite_colored)
-//    mealsPresenter.addMealToFavourite(meal)
-//    Toast.makeText(getActivity(), "Added to favorite successfully!", Toast.LENGTH_SHORT).show()
-//    meal.isFavorite = true
-//}

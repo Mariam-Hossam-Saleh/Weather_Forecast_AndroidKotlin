@@ -2,7 +2,7 @@
 <resources>
     <string name="menu_favorite">Slideshow</string>
     <string name="date">Date</string>
-    <string name="app_name">Weather_Forecast</string>
+    <string name="app_name">الطقس</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>

@@ -47,8 +47,8 @@ class SearchFragment : Fragment(), OnLocationClickListener {
                 if (latitude != 0.0 && longitude != 0.0) {
                     navigateToHomeWithLocation(latitude, longitude)
                 } else {
-                Toast.makeText(requireContext(), "Invalid location selected", Toast.LENGTH_SHORT).show()
-            }
+                    Toast.makeText(requireContext(), "Invalid location selected", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
@@ -70,8 +70,6 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         setUpRecyclerView()
         setupUI()
         searchViewModel.getFavoriteWeatherEntities()
-        binding.searchView.onActionViewExpanded()
-        binding.searchView.clearFocus()
     }
 
     private fun setupViewModel() {
@@ -111,6 +109,9 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         binding.btnMAP.setOnClickListener {
             openMapActivity()
         }
+
+        binding.searchView.onActionViewExpanded()
+        binding.searchView.clearFocus()
     }
 
     private fun openMapActivity() {
@@ -132,6 +133,13 @@ class SearchFragment : Fragment(), OnLocationClickListener {
     }
 
     override fun onLocationClick(weather: WeatherEntity) {
-        Toast.makeText(requireContext(), "Location clicked", Toast.LENGTH_SHORT).show()
+        findNavController().navigate(
+            R.id.action_nav_search_to_nav_home,
+            Bundle().apply {
+                putDouble("selected_lat", weather.lat)
+                putDouble("selected_lon", weather.lon)
+            }
+        )
+        Toast.makeText(requireContext(), "Showing ${weather.cityName} details", Toast.LENGTH_SHORT).show()
     }
 }
