@@ -120,10 +120,21 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         }
 
         homeViewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
-            homeWeatherAdapter.weatherEntity = weatherList ?: emptyList()
             homeTodayAdapter.weatherEntity = weatherList ?: emptyList()
-            homeWeatherAdapter.notifyDataSetChanged()
             homeTodayAdapter.notifyDataSetChanged()
+            if (currentCityName != null) {
+                homeViewModel.getDailyWeatherByCity(currentCityName!!)
+            }
+        }
+
+        homeViewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
+            homeTodayAdapter.weatherEntity = weatherList ?: emptyList()
+            homeTodayAdapter.notifyDataSetChanged()
+        }
+
+        homeViewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
+            homeWeatherAdapter.weatherEntity = dailyWeatherList ?: emptyList()
+            homeWeatherAdapter.notifyDataSetChanged()
         }
 
         homeViewModel.favoriteState.observe(viewLifecycleOwner) { weatherEntity ->
@@ -235,6 +246,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         homeViewModel.todayWeather.observe(viewLifecycleOwner) { currentWeather ->
             currentCityName = currentWeather?.cityName ?: "Unknown City"
             homeViewModel.fetchFavoriteStateForCity(currentCityName!!)
+            homeViewModel.getDailyWeatherByCity(currentCityName!!)
             if (currentWeather != null) {
                 binding.apply {
                     currentTemp.text = "${currentWeather.mainTemp}°C"
@@ -280,6 +292,9 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             Log.d("HomeFragment", "No network, attempting to show cached data")
             homeViewModel.getStoredCityWeather(lat, lon)
             homeViewModel.getStoredCurrentWeather()
+            if (currentCityName != null) {
+                homeViewModel.getDailyWeatherByCity(currentCityName!!)
+            }
             Toast.makeText(
                 requireContext(),
                 "No internet connection. Showing last update.",

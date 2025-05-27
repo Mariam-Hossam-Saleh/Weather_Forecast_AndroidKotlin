@@ -1,6 +1,5 @@
 package com.example.weather_forecast.model.pojos
 
-//@Entity(tableName = "weather_table")
 data class WeatherItem(
     val dt: Long,
     val main: Main,

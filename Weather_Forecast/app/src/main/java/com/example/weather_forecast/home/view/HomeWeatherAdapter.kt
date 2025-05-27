@@ -60,8 +60,6 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
                     .format(Date(weather.dt * 1000))
                 minMaxTemp.text = "${weather.mainTemp_min}/${weather.mainTemp_max}°C"
                 mainStatus.text = weather.weatherMain
-//                tvDescription.text = weather.weatherDescription
-//                tvHumidity.text = "Humidity: ${weather.humidity}%"
                 root.setOnClickListener {
                     onItemClick.onWeatherClick(weather)
                 }

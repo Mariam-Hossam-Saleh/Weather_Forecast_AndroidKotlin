@@ -26,7 +26,7 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
             parent,
             false
         )
-        return WeatherViewHolder(binding, onItemClick) // Pass the click listener to ViewHolder
+        return WeatherViewHolder(binding, onItemClick)
     }
 
     override fun getItemCount(): Int {
@@ -34,7 +34,6 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
     }
 
     override fun onBindViewHolder(holder: WeatherViewHolder, position: Int) {
-//        holder.bind(getItem(position))
         Glide.with(context)
             .load(getIconResId(weatherEntity.get(position).weatherIcon))
             .apply(
@@ -61,8 +60,6 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
                     .format(Date(currentWeather.dt * 1000))
                 temp.text = "${currentWeather.mainTemp}°C"
                 windSpeed.text = "${currentWeather.windSpeed}km/h"
-//                tvDescription.text = weather.weatherDescription
-//                tvHumidity.text = "Humidity: ${weather.humidity}%"
                 root.setOnClickListener {
                     onItemClick.onWeatherClick(currentWeather)
                 }
@@ -70,13 +67,3 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
         }
     }
 }
-
-//class WeatherDiffCallback : DiffUtil.ItemCallback<WeatherEntity>() {
-//    override fun areItemsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
-//        return oldItem.dt == newItem.dt
-//    }
-//
-//    override fun areContentsTheSame(oldItem: WeatherEntity, newItem: WeatherEntity): Boolean {
-//        return oldItem == newItem
-//    }
-//}

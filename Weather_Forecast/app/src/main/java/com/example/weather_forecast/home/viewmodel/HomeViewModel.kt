@@ -11,12 +11,16 @@ import com.example.weather_forecast.model.repo.WeatherRepository
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.ZoneId
+import java.time.ZoneOffset
 import java.time.ZonedDateTime
 
 class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
 
     private val _weatherList = MutableLiveData<List<WeatherEntity>>()
     val weatherList: LiveData<List<WeatherEntity>> = _weatherList
+
+    private val _dailyWeatherList = MutableLiveData<List<WeatherEntity>>()
+    val dailyWeatherList: LiveData<List<WeatherEntity>> = _dailyWeatherList
 
     private val _todayWeather = MutableLiveData<CurrentWeatherEntity?>()
     val todayWeather: LiveData<CurrentWeatherEntity?> = _todayWeather
@@ -33,7 +37,7 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
     private val _favoriteToggleResult = MutableLiveData<Boolean?>()
     val favoriteToggleResult: LiveData<Boolean?> = _favoriteToggleResult
 
-    private val todayMidnight: ZonedDateTime = LocalDate.now().atStartOfDay(ZoneId.systemDefault())
+    private val todayMidnight: ZonedDateTime = LocalDate.now().atStartOfDay(ZoneOffset.UTC)
     private val unixTimeSeconds = todayMidnight.toEpochSecond()
 
     fun fetchWeather(lat: Double, lon: Double) {
@@ -47,10 +51,9 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     lon = lon,
                     apiKey = "e82d172019ed90076e2ec824decb3d40"
                 )
-//                _weatherList.value = result
                 repo.clearOldWeather(unixTimeSeconds)
                 repo.insertWeatherList(result)
-//                getStoredCityWeather(lat, lon)
+                _weatherList.value = result
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch weather: ${e.message}"
                 Log.e("HomeViewModel", "Error fetching weather", e)
@@ -90,7 +93,6 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                 _todayWeather.value = result
                 repo.clearCurrentWeather()
                 repo.insertCurrentWeather(result)
-//                getStoredCurrentWeather()
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch current weather: ${e.message}"
                 Log.e("HomeViewModel", "Error fetching current weather", e)
@@ -131,14 +133,14 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                 val newFavoriteStatus = currentFavorite?.isFavorite != true
                 repo.updateWeatherFavoriteStatus(cityName, newFavoriteStatus)
                 _favoriteState.value = repo.getFavoriteStateForCity(cityName)
-                _favoriteToggleResult.value = newFavoriteStatus // Notify fragment of the new status
+                _favoriteToggleResult.value = newFavoriteStatus
                 _weatherList.value = repo.getCityWeather(lat, lon)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to update favorite status: ${e.message}"
                 Log.e("HomeViewModel", "Error updating favorite status", e)
             } finally {
                 _isLoading.value = false
-                _favoriteToggleResult.value = null // Reset to avoid repeated triggers
+                _favoriteToggleResult.value = null
             }
         }
     }
@@ -165,10 +167,10 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
             _errorMessage.value = null
             try {
                 val result = repo.getDailyWeatherByCity(cityName)
-                _weatherList.value = result
+                _dailyWeatherList.value = result
             } catch (e: Exception) {
-                _errorMessage.value = "Failed to get stored weather: ${e.message}"
-                Log.e("HomeViewModel", "Error getting stored weather", e)
+                _errorMessage.value = "Failed to get stored daily weather: ${e.message}"
+                Log.e("HomeViewModel", "Error getting stored daily weather", e)
             } finally {
                 _isLoading.value = false
             }
