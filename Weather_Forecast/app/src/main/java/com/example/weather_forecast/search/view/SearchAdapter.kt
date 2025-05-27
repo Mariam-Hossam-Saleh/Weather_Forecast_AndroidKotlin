@@ -6,6 +6,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -16,6 +17,7 @@ import com.example.weather_forecast.databinding.ItemDaysWeatherBinding
 import com.example.weather_forecast.databinding.ItemSearchBinding
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
+import com.example.weather_forecast.model.pojos.getWeatherStateResId
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -47,6 +49,7 @@ class SearchAdapter(private val context: Context, var weatherEntity: List<Weathe
         @SuppressLint("SetTextI18n")
         fun bind(weather: WeatherEntity) {
             binding.apply {
+                favItem.background = ContextCompat.getDrawable(root.context, getWeatherStateResId(weather.weatherMain))
                 cityName.text = weather.cityName
                 minMaxTemp.text = "${weather.mainTemp_min}/${weather.mainTemp_max}°C"
                 mainTemp.text = "${weather.mainTemp}°C"

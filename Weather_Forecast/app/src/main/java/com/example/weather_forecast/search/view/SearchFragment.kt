@@ -70,6 +70,8 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         setUpRecyclerView()
         setupUI()
         searchViewModel.getFavoriteWeatherEntities()
+        binding.searchView.onActionViewExpanded()
+        binding.searchView.clearFocus()
     }
 
     private fun setupViewModel() {

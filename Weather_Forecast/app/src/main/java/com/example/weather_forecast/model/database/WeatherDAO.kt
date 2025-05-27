@@ -47,6 +47,7 @@ interface WeatherDao {
         WHERE isFavorite = 1 
         AND dt = (SELECT MAX(dt) FROM weather_table WHERE cityName = weather_table.cityName AND isFavorite = 1)
         GROUP BY cityName
+        ORDER BY dt ASC
     """)
     suspend fun getFavoriteWeatherEntities(): List<WeatherEntity>
 }
