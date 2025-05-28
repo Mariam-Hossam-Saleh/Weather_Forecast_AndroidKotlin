@@ -69,6 +69,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 val longitude = data.getDoubleExtra("longitude", 0.0)
                 val source = data.getStringExtra("source")
                 if (latitude != 0.0 && longitude != 0.0 && source == "map") {
+                    // Save as default map location
                     val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
                     prefs.edit()
                         .putFloat("lastMapLatitude", latitude.toFloat())
@@ -76,6 +77,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         .apply()
                     isFromMapActivity = true
                     isFromSearchFragment = false
+                    isFromMapSelection = false
                     lastLatitude = latitude
                     lastLongitude = longitude
                     fetchWeatherForLocation(latitude, longitude)
@@ -154,14 +156,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         if (isFromSearchFragment) {
             lastLatitude?.let { lat ->
                 lastLongitude?.let { lon ->
-                    if (isFromMapSelection) {
-                        // Update saved map coordinates for map-selected location from SearchFragment
-                        prefs.edit()
-                            .putFloat("lastMapLatitude", lat.toFloat())
-                            .putFloat("lastMapLongitude", lon.toFloat())
-                            .apply()
-                        isFromMapActivity = true
-                    }
                     fetchWeatherForLocation(lat, lon)
                 }
             }
@@ -176,7 +170,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 val intent = Intent(requireContext(), MapActivity::class.java).apply {
                     putExtra("latitude", lastLatitude ?: 0.0)
                     putExtra("longitude", lastLongitude ?: 0.0)
-                    putExtra("address", "Select Location")
+                    putExtra("address", "") // Use empty string
                 }
                 mapActivityLauncher.launch(intent)
             } else {

@@ -12,7 +12,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
-import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_forecast.MapActivity
@@ -47,12 +46,6 @@ class SearchFragment : Fragment(), OnLocationClickListener {
                 val source = data.getStringExtra("source")
 
                 if (latitude != 0.0 && longitude != 0.0 && source == "map") {
-                    // Save to SharedPreferences as default map location
-                    val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-                    prefs.edit()
-                        .putFloat("lastMapLatitude", latitude.toFloat())
-                        .putFloat("lastMapLongitude", longitude.toFloat())
-                        .apply()
                     navigateToHomeWithLocation(latitude, longitude)
                 } else {
                     Toast.makeText(requireContext(), R.string.invalid_location, Toast.LENGTH_SHORT).show()
@@ -124,7 +117,7 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         val intent = Intent(requireContext(), MapActivity::class.java).apply {
             putExtra("latitude", lat)
             putExtra("longitude", lon)
-            putExtra("address", "Select Location")
+            putExtra("address", "") // Use empty string instead of "Select Location"
         }
         mapActivityLauncher.launch(intent)
     }

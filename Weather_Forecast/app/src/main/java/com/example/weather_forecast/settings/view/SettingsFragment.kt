@@ -49,7 +49,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 val intent = Intent(requireContext(), MapActivity::class.java).apply {
                     putExtra("latitude", 0.0)
                     putExtra("longitude", 0.0)
-                    putExtra("address", "Select Location")
+                    putExtra("address", "") // Use empty string
                 }
                 mapActivityLauncher.launch(intent)
             }
