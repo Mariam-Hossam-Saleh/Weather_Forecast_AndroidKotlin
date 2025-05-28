@@ -91,7 +91,6 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     apiKey = "e82d172019ed90076e2ec824decb3d40"
                 )
                 _todayWeather.value = result
-//                repo.clearCurrentWeather()
                 repo.insertCurrentWeather(result)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch current weather: ${e.message}"
