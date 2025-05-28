@@ -191,32 +191,35 @@
                     android:orientation="vertical"
                     android:scaleType="centerCrop">
 
+                    <!-- Humidity Row -->
                     <LinearLayout
                         android:layout_marginTop="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="10dp"
                             android:textSize="14sp"
                             android:text="@string/humidity"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:gravity="start"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp" />
+
                         <TextView
                             android:id="@+id/humidity"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="35dp"
                             android:text="-------"
                             android:textSize="16sp"
-                            tools:ignore="SmallSp"/>
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginTop="10dp" />
                     </LinearLayout>
 
                     <View
@@ -225,30 +228,32 @@
                         android:layout_marginVertical="18dp"
                         android:background="@color/white" />
 
+                    <!-- Wind Speed Row -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="10dp"
                             android:textSize="14sp"
                             android:text="@string/windspeed"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:gravity="start"
+                            android:layout_marginStart="10dp" />
+
                         <TextView
                             android:id="@+id/currentWindSpeed"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="15dp"
                             android:text="-------"
                             android:textSize="16sp"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:layout_marginEnd="10dp" />
                     </LinearLayout>
 
                     <View
@@ -257,32 +262,36 @@
                         android:layout_marginVertical="18dp"
                         android:background="@color/white" />
 
+                    <!-- Pressure Row -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="10dp"
                             android:textSize="14sp"
                             android:text="@string/pressure"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:gravity="start"
+                            android:layout_marginStart="10dp" />
+
                         <TextView
                             android:id="@+id/currentPressure"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="35dp"
                             android:text="-------"
                             android:textSize="16sp"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:layout_marginEnd="10dp" />
                     </LinearLayout>
                 </LinearLayout>
+
+                <!-- Second Column -->
                 <LinearLayout
                     android:layout_marginStart="20dp"
                     android:layout_width="170dp"
@@ -290,33 +299,36 @@
                     android:background="@drawable/rounded_bg"
                     android:orientation="vertical"
                     android:scaleType="centerCrop">
+
+                    <!-- Visibility Row -->
                     <LinearLayout
                         android:layout_marginTop="10dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="10dp"
                             android:textSize="14sp"
-                            android:layout_marginTop="10dp"
                             android:text="@string/visibility"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:gravity="start"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginTop="10dp" />
+
                         <TextView
                             android:id="@+id/currentVisibility"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginStart="25dp"
                             android:text="-------"
                             android:textSize="16sp"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:layout_marginEnd="10dp"
+                            android:layout_marginTop="10dp" />
                     </LinearLayout>
 
                     <View
@@ -325,30 +337,32 @@
                         android:layout_marginVertical="18dp"
                         android:background="@color/white" />
 
+                    <!-- Sunrise Row -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="10dp"
                             android:textSize="14sp"
                             android:text="@string/sunrise"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:gravity="start"
+                            android:layout_marginStart="10dp" />
+
                         <TextView
                             android:id="@+id/sunrise"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="30dp"
                             android:text="-------"
                             android:textSize="16sp"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:layout_marginEnd="10dp" />
                     </LinearLayout>
 
                     <View
@@ -357,33 +371,37 @@
                         android:layout_marginVertical="18dp"
                         android:background="@color/white" />
 
+                    <!-- Sunset Row -->
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="10dp"
                             android:textSize="14sp"
                             android:text="@string/sunset"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:gravity="start"
+                            android:layout_marginStart="10dp" />
+
                         <TextView
                             android:id="@+id/sunset"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:textColor="@color/white"
-                            android:layout_marginStart="35dp"
                             android:text="-------"
                             android:textSize="16sp"
-                            tools:ignore="SmallSp"
-                            android:gravity="center"/>
+                            android:layout_marginEnd="10dp" />
                     </LinearLayout>
                 </LinearLayout>
+
             </LinearLayout>
+
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/todayRecycleView"
                 android:layout_width="match_parent"

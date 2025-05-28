@@ -28,7 +28,7 @@
     <string-array name="pressure_values">
         <item>hPa</item>
         <item>mb</item>
-        <item>in Hg</item>
+        <item>Hg</item>
         <item>mm Hg</item>
     </string-array>
     <string-array name="temperature_units">
@@ -40,10 +40,6 @@
         <item>Celsius</item>
         <item>Kelvin</item>
         <item>Fahrenheit</item>
-    </string-array>
-    <string-array name="elevation_units">
-        <item>@string/elevation_meters</item>
-        <item>@string/elevation_feet</item>
     </string-array>
     <string-array name="elevation_values">
         <item>Meters</item>

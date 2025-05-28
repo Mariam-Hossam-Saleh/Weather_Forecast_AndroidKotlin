@@ -20,6 +20,7 @@
     <string name="clouds">الغيوم</string>
     <string name="sunrise">الشروق</string>
     <string name="sunset">الغروب</string>
+    <string name="visibility">الرؤية</string>
 
 
     <!-- Preference titles -->
@@ -36,9 +37,9 @@
     <string name="language_arabic">العربية</string>
 
     <!-- Wind speed entries -->
-    <string name="wind_speed_ms">م/ث</string>
-    <string name="wind_speed_kmh">كم/س</string>
-    <string name="wind_speed_mph">ميل/س</string>
+    <string name="wind_speed_ms">متر/ثانية</string>
+    <string name="wind_speed_kmh">كيلومتر/ساعة</string>
+    <string name="wind_speed_mph">ميل/ساعة</string>
 
     <!-- Pressure entries -->
     <string name="pressure_hpa">هيكتوباسكال</string>
@@ -51,14 +52,11 @@
     <string name="temperature_kelvin">كلفن</string>
     <string name="temperature_fahrenheit">فهرنهايت</string>
 
-    <!-- Elevation entries -->
-    <string name="elevation_meters">أمتار</string>
-    <string name="elevation_feet">أقدام</string>
+
 
     <!-- Visibility entries -->
-    <string name="visibility_meters">أمتار</string>
-    <string name="visibility_kilometers">كيلومترات</string>
-    <string name="visibility_miles">أميال</string>
-    <string name="visibility">Visibility</string>
+    <string name="visibility_meters">متر</string>
+    <string name="visibility_kilometers">كيلومتر</string>
+    <string name="visibility_miles">ميل</string>
 
 </resources>

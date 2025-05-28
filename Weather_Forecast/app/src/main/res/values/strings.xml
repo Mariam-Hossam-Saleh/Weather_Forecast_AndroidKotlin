@@ -21,6 +21,8 @@
     <string name="clouds">Clouds</string>
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
+    <string name="visibility">Visibility</string>
+
 
     <!-- Preference titles -->
     <string name="language_title">Language</string>
@@ -43,7 +45,7 @@
     <!-- Pressure entries -->
     <string name="pressure_hpa">hPa</string>
     <string name="pressure_mb">mb</string>
-    <string name="pressure_inhg">in Hg</string>
+    <string name="pressure_inhg">Hg</string>
     <string name="pressure_mmhg">mm Hg</string>
 
     <!-- Temperature entries -->
@@ -51,14 +53,10 @@
     <string name="temperature_kelvin">Kelvin</string>
     <string name="temperature_fahrenheit">Fahrenheit</string>
 
-    <!-- Elevation entries -->
-    <string name="elevation_meters">Meters</string>
-    <string name="elevation_feet">Feet</string>
-
     <!-- Visibility entries -->
-    <string name="visibility_meters">Meters</string>
-    <string name="visibility_kilometers">Kilometers</string>
-    <string name="visibility_miles">Miles</string>
-    <string name="visibility">Visibility</string>
+    <string name="visibility_meters">m</string>
+    <string name="visibility_kilometers">km</string>
+    <string name="visibility_miles">mile</string>
+
 
 </resources>

@@ -252,6 +252,33 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         val pressureUnit = prefs.getString("pressure_unit", "hPa") ?: "hPa"
         val visibilityUnit = prefs.getString("visibility_unit", "Meters") ?: "Meters"
 
+        // Map unit keys to localized display names
+        val temperatureUnitDisplay = when (temperatureUnit) {
+            "Celsius" -> getString(R.string.temperature_celsius)
+            "Fahrenheit" -> getString(R.string.temperature_fahrenheit)
+            "Kelvin" -> getString(R.string.temperature_kelvin)
+            else -> getString(R.string.temperature_celsius)
+        }
+        val windSpeedUnitDisplay = when (windSpeedUnit) {
+            "m/s" -> getString(R.string.wind_speed_ms)
+            "km/h" -> getString(R.string.wind_speed_kmh)
+            "mph" -> getString(R.string.wind_speed_mph)
+            else -> getString(R.string.wind_speed_ms)
+        }
+        val pressureUnitDisplay = when (pressureUnit) {
+            "hPa" -> getString(R.string.pressure_hpa)
+            "mb" -> getString(R.string.pressure_mb)
+            "Hg" -> getString(R.string.pressure_inhg)
+            "mm Hg" -> getString(R.string.pressure_mmhg)
+            else -> getString(R.string.pressure_hpa)
+        }
+        val visibilityUnitDisplay = when (visibilityUnit) {
+            "Meters" -> getString(R.string.visibility_meters)
+            "Kilometers" -> getString(R.string.visibility_kilometers)
+            "Miles" -> getString(R.string.visibility_miles)
+            else -> getString(R.string.visibility_meters)
+        }
+
         homeViewModel.todayWeather.observe(viewLifecycleOwner) { currentWeather ->
             currentCityName = currentWeather?.cityName ?: "Unknown City"
             homeViewModel.fetchFavoriteStateForCity(currentCityName!!)
@@ -265,7 +292,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         "Kelvin" -> currentWeather.mainTemp + 273.15
                         else -> currentWeather.mainTemp
                     }
-                    currentTemp.text = "${String.format("%.1f", temp.toDouble())}${getTemperatureUnitSymbol(temperatureUnit)}"
+                    currentTemp.text = "${String.format("%.1f", temp)}${getTemperatureUnitSymbol(temperatureUnitDisplay)}"
 
                     // Convert wind speed based on selected unit
                     val windSpeed = when (windSpeedUnit) {
@@ -274,17 +301,17 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         "mph" -> currentWeather.windSpeed * 2.23694
                         else -> currentWeather.windSpeed
                     }
-                    currentWindSpeed.text = "${String.format("%.1f", windSpeed.toDouble())} $windSpeedUnit"
+                    currentWindSpeed.text = "${String.format("%.1f", windSpeed.toDouble())} $windSpeedUnitDisplay"
 
                     // Convert pressure based on selected unit
                     val pressure = when (pressureUnit) {
                         "hPa" -> currentWeather.mainPressure.toDouble()
                         "mb" -> currentWeather.mainPressure.toDouble()
-                        "in Hg" -> currentWeather.mainPressure * 0.02953
+                        "Hg" -> currentWeather.mainPressure * 0.02953
                         "mm Hg" -> currentWeather.mainPressure * 0.75006
                         else -> currentWeather.mainPressure.toDouble()
                     }
-                    currentPressure.text = "${String.format("%.1f", pressure)} $pressureUnit"
+                    currentPressure.text = "${String.format("%.1f", pressure)} $pressureUnitDisplay"
 
                     // Convert visibility based on selected unit
                     val visibility = when (visibilityUnit) {
@@ -293,7 +320,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         "Miles" -> currentWeather.visibility / 1609.34
                         else -> currentWeather.visibility.toDouble()
                     }
-                    currentVisibility.text = "${String.format("%.1f", visibility)} $visibilityUnit"
+                    currentVisibility.text = "${String.format("%.1f", visibility)} $visibilityUnitDisplay"
 
                     currentState.text = currentWeather.weatherMain
                     currentDateAndTime.text = SimpleDateFormat("EEE, MMM d, HH:mm", Locale.getDefault())
@@ -338,6 +365,9 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             "Celsius" -> "°C"
             "Fahrenheit" -> "°F"
             "Kelvin" -> "K"
+            "سيليزيوس" -> "°س"
+            "كلفن" -> "°ك"
+            "فهرنهايت" -> "°ف"
             else -> "°C"
         }
     }
