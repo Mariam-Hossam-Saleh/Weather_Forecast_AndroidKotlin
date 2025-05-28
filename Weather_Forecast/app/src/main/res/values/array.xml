@@ -1,39 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="visibility_units">
-        <item>Meters</item>
-        <item>Kilometers</item>
-        <item>Miles</item>
-    </string-array>
-
     <string-array name="languages">
         <item>Match System Language</item>
         <item>English</item>
         <item>Arabic</item>
     </string-array>
-
-    <string-array name="elevation_units">
-        <item>Meters</item>
-        <item>Feet</item>
+    <string-array name="language_values">
+        <item>system</item>
+        <item>en</item>
+        <item>ar</item>
     </string-array>
-
     <string-array name="wind_speed_units">
         <item>m/s</item>
         <item>km/h</item>
         <item>mph</item>
     </string-array>
-
+    <string-array name="wind_speed_values">
+        <item>m/s</item>
+        <item>km/h</item>
+        <item>mph</item>
+    </string-array>
     <string-array name="pressure_units">
         <item>hPa</item>
         <item>mb</item>
         <item>in Hg</item>
         <item>mm Hg</item>
     </string-array>
-
+    <string-array name="pressure_values">
+        <item>hPa</item>
+        <item>mb</item>
+        <item>in Hg</item>
+        <item>mm Hg</item>
+    </string-array>
     <string-array name="temperature_units">
         <item>Celsius</item>
         <item>Kelvin</item>
         <item>Fahrenheit</item>
     </string-array>
-
+    <string-array name="temperature_values">
+        <item>Celsius</item>
+        <item>Kelvin</item>
+        <item>Fahrenheit</item>
+    </string-array>
+    <string-array name="elevation_units">
+        <item>Meters</item>
+        <item>Feet</item>
+    </string-array>
+    <string-array name="elevation_values">
+        <item>Meters</item>
+        <item>Feet</item>
+    </string-array>
+    <string-array name="visibility_units">
+        <item>Meters</item>
+        <item>Kilometers</item>
+        <item>Miles</item>
+    </string-array>
+    <string-array name="visibility_values">
+        <item>Meters</item>
+        <item>Kilometers</item>
+        <item>Miles</item>
+    </string-array>
 </resources>

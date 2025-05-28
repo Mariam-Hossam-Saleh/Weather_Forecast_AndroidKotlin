@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="language"
+        android:title="Language"
+        android:entries="@array/languages"
+        android:entryValues="@array/language_values"
+        android:defaultValue="system"
+        android:summary="%s" />
+    <ListPreference
+        android:key="wind_speed_unit"
+        android:title="Wind Speed Unit"
+        android:entries="@array/wind_speed_units"
+        android:entryValues="@array/wind_speed_values"
+        android:defaultValue="m/s"
+        android:summary="%s" />
+    <ListPreference
+        android:key="pressure_unit"
+        android:title="Pressure Unit"
+        android:entries="@array/pressure_units"
+        android:entryValues="@array/pressure_values"
+        android:defaultValue="hPa"
+        android:summary="%s" />
+    <ListPreference
+        android:key="temperature_unit"
+        android:title="Temperature Unit"
+        android:entries="@array/temperature_units"
+        android:entryValues="@array/temperature_values"
+        android:defaultValue="Celsius"
+        android:summary="%s" />
+    <ListPreference
+        android:key="elevation_unit"
+        android:title="Elevation Unit"
+        android:entries="@array/elevation_units"
+        android:entryValues="@array/elevation_values"
+        android:defaultValue="Meters"
+        android:summary="%s" />
+    <ListPreference
+        android:key="visibility_unit"
+        android:title="Visibility Unit"
+        android:entries="@array/visibility_units"
+        android:entryValues="@array/visibility_values"
+        android:defaultValue="Meters"
+        android:summary="%s" />
+</PreferenceScreen>

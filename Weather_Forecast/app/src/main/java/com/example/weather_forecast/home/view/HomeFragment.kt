@@ -33,6 +33,7 @@ import com.example.weather_forecast.model.pojos.getWeatherStateResId
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.utils.NetworkUtils
 import com.example.weather_forecast.utils.location.LocationPermissionHandler
+import androidx.preference.PreferenceManager
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -130,11 +131,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
         }
 
-        homeViewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
-            homeTodayAdapter.weatherEntity = weatherList ?: emptyList()
-            homeTodayAdapter.notifyDataSetChanged()
-        }
-
         homeViewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
             homeWeatherAdapter.weatherEntity = dailyWeatherList ?: emptyList()
             homeWeatherAdapter.notifyDataSetChanged()
@@ -212,6 +208,10 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         if (!isFromSearchFragment) {
             locationHandler.fetchCurrentLocation()
         }
+        // Refresh weather data to reflect unit changes
+        if (lastLatitude != null && lastLongitude != null) {
+            fetchWeatherForLocation(lastLatitude!!, lastLongitude!!)
+        }
     }
 
     override fun onStop() {
@@ -246,21 +246,60 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
     @SuppressLint("SetTextI18n")
     private fun setCurrentWeatherInfo() {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val temperatureUnit = prefs.getString("temperature_unit", "Celsius") ?: "Celsius"
+        val windSpeedUnit = prefs.getString("wind_speed_unit", "m/s") ?: "m/s"
+        val pressureUnit = prefs.getString("pressure_unit", "hPa") ?: "hPa"
+        val visibilityUnit = prefs.getString("visibility_unit", "Meters") ?: "Meters"
+
         homeViewModel.todayWeather.observe(viewLifecycleOwner) { currentWeather ->
             currentCityName = currentWeather?.cityName ?: "Unknown City"
             homeViewModel.fetchFavoriteStateForCity(currentCityName!!)
             homeViewModel.getDailyWeatherByCity(currentCityName!!)
             if (currentWeather != null) {
                 binding.apply {
-                    currentTemp.text = "${currentWeather.mainTemp}°C"
+                    // Convert temperature based on selected unit
+                    val temp = when (temperatureUnit) {
+                        "Celsius" -> currentWeather.mainTemp
+                        "Fahrenheit" -> (currentWeather.mainTemp * 9 / 5) + 32
+                        "Kelvin" -> currentWeather.mainTemp + 273.15
+                        else -> currentWeather.mainTemp
+                    }
+                    currentTemp.text = "${String.format("%.1f", temp.toDouble())}${getTemperatureUnitSymbol(temperatureUnit)}"
+
+                    // Convert wind speed based on selected unit
+                    val windSpeed = when (windSpeedUnit) {
+                        "m/s" -> currentWeather.windSpeed
+                        "km/h" -> currentWeather.windSpeed * 3.6
+                        "mph" -> currentWeather.windSpeed * 2.23694
+                        else -> currentWeather.windSpeed
+                    }
+                    currentWindSpeed.text = "${String.format("%.1f", windSpeed.toDouble())} $windSpeedUnit"
+
+                    // Convert pressure based on selected unit
+                    val pressure = when (pressureUnit) {
+                        "hPa" -> currentWeather.mainPressure.toDouble()
+                        "mb" -> currentWeather.mainPressure.toDouble()
+                        "in Hg" -> currentWeather.mainPressure * 0.02953
+                        "mm Hg" -> currentWeather.mainPressure * 0.75006
+                        else -> currentWeather.mainPressure.toDouble()
+                    }
+                    currentPressure.text = "${String.format("%.1f", pressure)} $pressureUnit"
+
+                    // Convert visibility based on selected unit
+                    val visibility = when (visibilityUnit) {
+                        "Meters" -> currentWeather.visibility.toDouble()
+                        "Kilometers" -> currentWeather.visibility / 1000.0
+                        "Miles" -> currentWeather.visibility / 1609.34
+                        else -> currentWeather.visibility.toDouble()
+                    }
+                    clouds.text = "${String.format("%.1f", visibility)} $visibilityUnit" // Replace with visibility.text if available
+
                     currentState.text = currentWeather.weatherMain
                     currentDateAndTime.text = SimpleDateFormat("EEE, MMM d, HH:mm", Locale.getDefault())
                         .format(Date(currentWeather.dt * 1000))
                     currentCity.text = currentWeather.cityName
                     humidity.text = "${currentWeather.mainHumidity}%"
-                    windSpeed.text = currentWeather.windSpeed.toString()
-                    pressure.text = currentWeather.mainPressure.toString()
-                    clouds.text = "${currentWeather.clouds}%"
                     sunrise.text = formatUnixTimeToLocalTime(currentWeather.sysSunrise)
                     sunset.text = formatUnixTimeToLocalTime(currentWeather.sysSunset)
                     Log.i("TempMinMax", "Min: ${currentWeather.mainTemp_min}, Max: ${currentWeather.mainTemp_max}")
@@ -294,13 +333,21 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         }
     }
 
+    private fun getTemperatureUnitSymbol(unit: String): String {
+        return when (unit) {
+            "Celsius" -> "°C"
+            "Fahrenheit" -> "°F"
+            "Kelvin" -> "K"
+            else -> "°C"
+        }
+    }
+
     fun formatUnixTimeToLocalTime(dt: Long): String {
         val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
         val dateTime = Instant.ofEpochSecond(dt)
             .atZone(ZoneId.systemDefault())
         return dateTime.format(formatter)
     }
-
 
     private fun fetchWeatherForLocation(lat: Double, lon: Double) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
