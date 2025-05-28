@@ -89,5 +89,10 @@
     <string name="location_source_gps">GPS</string>
     <string name="location_source_map">Map</string>
 
+    <string name="choose_location_source">Choose Location Source</string>
+    <string name="location_source_message">How would you like to set your location for weather updates?</string>
+    <string name="gps">GPS</string>
+    <string name="map">Map</string>
+
 
 </resources>

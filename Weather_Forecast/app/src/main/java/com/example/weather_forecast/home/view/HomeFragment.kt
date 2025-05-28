@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,6 +37,7 @@ import com.example.weather_forecast.model.pojos.getWeatherStateResId
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.utils.NetworkUtils
 import com.example.weather_forecast.utils.location.LocationPermissionHandler
+import com.example.weather_forecast.viewmodel.LocationSourceViewModel
 import androidx.preference.PreferenceManager
 import java.time.Instant
 import java.time.ZoneId
@@ -61,6 +63,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private var isFromSearchFragment: Boolean = false
     private var isFromMapActivity: Boolean = false
     private var isFromMapSelection: Boolean = false
+    private val locationSourceViewModel: LocationSourceViewModel by activityViewModels()
 
     private val mapActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == android.app.Activity.RESULT_OK) {
@@ -69,7 +72,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 val longitude = data.getDoubleExtra("longitude", 0.0)
                 val source = data.getStringExtra("source")
                 if (latitude != 0.0 && longitude != 0.0 && source == "map") {
-                    // Save as default map location
                     val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
                     prefs.edit()
                         .putFloat("lastMapLatitude", latitude.toFloat())
@@ -151,8 +153,15 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         setUpRecyclerView()
         setCurrentWeatherInfo()
 
-        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val locationSource = prefs.getString("location_source", "gps") ?: "gps"
+        // Observe location source changes
+        locationSourceViewModel.locationSource.observe(viewLifecycleOwner) { source ->
+            Log.d("HomeFragment", "Location source updated: $source")
+            initLocationLogic(source)
+        }
+    }
+
+    private fun initLocationLogic(locationSource: String) {
+        Log.d("HomeFragment", "Initializing location logic with source=$locationSource")
         if (isFromSearchFragment) {
             lastLatitude?.let { lat ->
                 lastLongitude?.let { lon ->
@@ -160,6 +169,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 }
             }
         } else if (locationSource == "map") {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
             val savedLat = prefs.getFloat("lastMapLatitude", 0f).toDouble()
             val savedLon = prefs.getFloat("lastMapLongitude", 0f).toDouble()
             if (savedLat != 0.0 && savedLon != 0.0 && !isFromMapActivity) {
@@ -170,7 +180,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 val intent = Intent(requireContext(), MapActivity::class.java).apply {
                     putExtra("latitude", lastLatitude ?: 0.0)
                     putExtra("longitude", lastLongitude ?: 0.0)
-                    putExtra("address", "") // Use empty string
+                    putExtra("address", "")
                 }
                 mapActivityLauncher.launch(intent)
             } else {
@@ -180,109 +190,24 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                     }
                 }
             }
-        } else {
+        } else if (locationSource == "gps") {
+            Log.d("HomeFragment", "Requesting location permission for GPS")
             locationHandler.requestLocationPermission()
-        }
-
-        homeViewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
-            homeTodayAdapter.weatherEntity = weatherList ?: emptyList()
-            homeTodayAdapter.notifyDataSetChanged()
-            if (currentCityName != null) {
-                homeViewModel.getDailyWeatherByCity(currentCityName!!)
-            }
-        }
-
-        homeViewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
-            homeWeatherAdapter.weatherEntity = dailyWeatherList ?: emptyList()
-            homeWeatherAdapter.notifyDataSetChanged()
-        }
-
-        homeViewModel.favoriteState.observe(viewLifecycleOwner) { weatherEntity ->
-            Log.d("HomeFragment", "Favorite state changed: $weatherEntity")
-            if (weatherEntity != null) {
-                binding.btnFavorite.setImageResource(
-                    if (weatherEntity.isFavorite) R.drawable.favourite_colored
-                    else R.drawable.favourite
-                )
-            } else {
-                binding.btnFavorite.setImageResource(R.drawable.favourite)
-            }
-        }
-
-        homeViewModel.favoriteToggleResult.observe(viewLifecycleOwner) { isFavorite ->
-            isFavorite?.let {
-                Toast.makeText(
-                    requireContext(),
-                    getString(
-                        if (it) R.string.added_to_favorites else R.string.removed_from_favorites,
-                        currentCityName
-                    ),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-        }
-
-        homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-                Log.e("HomeFragment", "Error: $it")
-            }
-        }
-
-        binding.btnEnableLocation.setOnClickListener {
-            Log.d("HomeFragment", "Enable Location button clicked")
-            locationHandler.promptToEnableLocation()
-        }
-
-        binding.btnRequestLocation.setOnClickListener {
-            Log.d("HomeFragment", "Enable Location services button clicked")
-            locationHandler.requestLocationPermission()
-        }
-
-        binding.btnFavorite.setOnClickListener {
-            if (lastLatitude != null && lastLongitude != null && currentCityName != null) {
-                homeViewModel.toggleFavoriteStatus(currentCityName!!, lastLatitude!!, lastLongitude!!)
-            } else {
-                Toast.makeText(requireContext(), R.string.no_location, Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.settings.setOnClickListener {
-            Log.d("HomeFragment", "Settings button clicked")
-            val navController = NavHostFragment.findNavController(this@HomeFragment)
-            navController.navigate(R.id.action_nav_home_to_nav_settings)
-            Toast.makeText(requireContext(), R.string.settings_clicked, Toast.LENGTH_SHORT).show()
-        }
-
-        binding.search.setOnClickListener {
-            Log.d("HomeFragment", "Search button clicked")
-            val bundle = Bundle().apply {
-                putDouble("selected_lat", lastLatitude ?: 0.0)
-                putDouble("selected_lon", lastLongitude ?: 0.0)
-            }
-            val navController = NavHostFragment.findNavController(this@HomeFragment)
-            navController.navigate(R.id.action_nav_home_to_nav_search, bundle)
-            Toast.makeText(requireContext(), R.string.manage_cities, Toast.LENGTH_SHORT).show()
         }
     }
 
     override fun onResume() {
         super.onResume()
+        // Only handle non-first-launch updates to avoid duplicate calls
         val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val locationSource = prefs.getString("location_source", "gps") ?: "gps"
-        if (locationSource == "gps" && !isFromSearchFragment && !isFromMapActivity) {
-            locationHandler.fetchCurrentLocation()
-        } else if (locationSource == "map" && !isFromSearchFragment && !isFromMapActivity) {
-            val savedLat = prefs.getFloat("lastMapLatitude", 0f).toDouble()
-            val savedLon = prefs.getFloat("lastMapLongitude", 0f).toDouble()
-            if (savedLat != 0.0 && savedLon != 0.0) {
-                lastLatitude = savedLat
-                lastLongitude = savedLon
-                fetchWeatherForLocation(savedLat, savedLon)
+        if (isFromSearchFragment || isFromMapActivity) {
+            lastLatitude?.let { lat ->
+                lastLongitude?.let { lon ->
+                    fetchWeatherForLocation(lat, lon)
+                }
             }
-        }
-        if (lastLatitude != null && lastLongitude != null && (isFromSearchFragment || isFromMapActivity)) {
-            fetchWeatherForLocation(lastLatitude!!, lastLongitude!!)
+        } else if (prefs.getString("location_source", "gps") == "gps" && !isFromMapActivity) {
+            locationHandler.fetchCurrentLocation()
         }
     }
 
@@ -370,13 +295,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                     }
                     currentTemp.text = "${String.format("%.1f", temp.toDouble())}${getTemperatureUnitSymbol(temperatureUnit)}"
 
-                    val feelslike = when (temperatureUnit) {
+                    val feelsLike = when (temperatureUnit) {
                         "Celsius" -> currentWeather.mainFeels_like
                         "Fahrenheit" -> (currentWeather.mainFeels_like * 9 / 5) + 32
                         "Kelvin" -> currentWeather.mainFeels_like + 273.15
                         else -> currentWeather.mainFeels_like
                     }
-                    feelsLike.text = "${String.format("%.1f", feelslike.toDouble())}${getTemperatureUnitSymbol(temperatureUnit)}"
+                    currentFeelsLike.text = "${String.format("%.1f", feelsLike.toDouble())}${getTemperatureUnitSymbol(temperatureUnit)}"
 
                     val windSpeed = when (windSpeedUnit) {
                         "m/s" -> currentWeather.windSpeed
@@ -440,6 +365,87 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                     }
                 }
             }
+        }
+
+        homeViewModel.weatherList.observe(viewLifecycleOwner) { weatherList ->
+            homeTodayAdapter.weatherEntity = weatherList ?: emptyList()
+            homeTodayAdapter.notifyDataSetChanged()
+            if (currentCityName != null) {
+                homeViewModel.getDailyWeatherByCity(currentCityName!!)
+            }
+        }
+
+        homeViewModel.dailyWeatherList.observe(viewLifecycleOwner) { dailyWeatherList ->
+            homeWeatherAdapter.weatherEntity = dailyWeatherList ?: emptyList()
+            homeWeatherAdapter.notifyDataSetChanged()
+        }
+
+        homeViewModel.favoriteState.observe(viewLifecycleOwner) { weatherEntity ->
+            Log.d("HomeFragment", "Favorite state changed: $weatherEntity")
+            if (weatherEntity != null) {
+                binding.btnFavorite.setImageResource(
+                    if (weatherEntity.isFavorite) R.drawable.favourite_colored
+                    else R.drawable.favourite
+                )
+            } else {
+                binding.btnFavorite.setImageResource(R.drawable.favourite)
+            }
+        }
+
+        homeViewModel.favoriteToggleResult.observe(viewLifecycleOwner) { isFavorite ->
+            isFavorite?.let {
+                Toast.makeText(
+                    requireContext(),
+                    getString(
+                        if (it) R.string.added_to_favorites else R.string.removed_from_favorites,
+                        currentCityName
+                    ),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                Log.e("HomeFragment", "Error: $it")
+            }
+        }
+
+        binding.btnEnableLocation.setOnClickListener {
+            Log.d("HomeFragment", "Enable Location button clicked")
+            locationHandler.promptToEnableLocation()
+        }
+
+        binding.btnRequestLocation.setOnClickListener {
+            Log.d("HomeFragment", "Enable Location services button clicked")
+            locationHandler.requestLocationPermission()
+        }
+
+        binding.btnFavorite.setOnClickListener {
+            if (lastLatitude != null && lastLongitude != null && currentCityName != null) {
+                homeViewModel.toggleFavoriteStatus(currentCityName!!, lastLatitude!!, lastLongitude!!)
+            } else {
+                Toast.makeText(requireContext(), R.string.no_location, Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        binding.settings.setOnClickListener {
+            Log.d("HomeFragment", "Settings button clicked")
+            val navController = NavHostFragment.findNavController(this@HomeFragment)
+            navController.navigate(R.id.action_nav_home_to_nav_settings)
+            Toast.makeText(requireContext(), R.string.settings_clicked, Toast.LENGTH_SHORT).show()
+        }
+
+        binding.search.setOnClickListener {
+            Log.d("HomeFragment", "Search button clicked")
+            val bundle = Bundle().apply {
+                putDouble("selected_lat", lastLatitude ?: 0.0)
+                putDouble("selected_lon", lastLongitude ?: 0.0)
+            }
+            val navController = NavHostFragment.findNavController(this@HomeFragment)
+            navController.navigate(R.id.action_nav_home_to_nav_search, bundle)
+            Toast.makeText(requireContext(), R.string.manage_cities, Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -100,5 +100,9 @@
     <string name="location_source_title">مصدر الموقع</string>
     <string name="location_source_gps">نظام تحديد المواقع</string>
     <string name="location_source_map">الخريطة</string>
+    <string name="choose_location_source">اختيار مصدر الموقع</string>
+    <string name="location_source_message">كيف تريد تحديد موقعك لتحديثات الطقس؟</string>
+    <string name="gps">نظام تحديد المواقع</string>
+    <string name="map">Select Location</string>
 
 </resources>
