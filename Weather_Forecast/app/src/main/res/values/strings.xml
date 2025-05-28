@@ -82,5 +82,12 @@
     <string name="added_to_favorites">%1$s Added to Favorites</string>
     <string name="removed_from_favorites">%1$s Removed from Favorites</string>
     <string name="no_internet">No internet connection. Showing last update.</string>
+    <string name="feels_like">Feels Like</string>
+    <string name="invalid_location">Invalid location selected</string>
+    <string name="showing_city_details">Showing %1$s details</string>
+    <string name="location_source_title">Location Source</string>
+    <string name="location_source_gps">GPS</string>
+    <string name="location_source_map">Map</string>
+
 
 </resources>

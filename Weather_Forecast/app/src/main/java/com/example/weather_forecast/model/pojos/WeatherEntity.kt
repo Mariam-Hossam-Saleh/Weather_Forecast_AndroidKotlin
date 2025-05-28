@@ -125,7 +125,7 @@ fun getIconResId(iconCode: String): Int {
 
 fun getWeatherStateResId(weatherMain: String): Int {
     return when (weatherMain) {
-        "Clear" -> R.drawable.c4
+        "Clear" -> R.drawable.clear
         "Clouds" -> R.drawable.cloud7
         "Rain" -> R.drawable.rain4
         "Snow" -> R.drawable.snowphoto

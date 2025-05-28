@@ -2,7 +2,7 @@
 <resources>
     <string name="menu_favorite">المفضلة</string>
     <string name="date">التاريخ</string>
-    <string name="app_name">الطقس</string>
+    <string name="app_name">حالة الطقس</string>
     <string name="navigation_drawer_open">فتح قائمة التنقل</string>
     <string name="navigation_drawer_close">إغلاق قائمة التنقل</string>
     <string name="nav_header_title">أندرويد ستوديو</string>
@@ -94,4 +94,11 @@
     <string name="added_to_favorites">تمت إضافة %1$s إلى المفضلة</string>
     <string name="removed_from_favorites">تمت إزالة %1$s من المفضلة</string>
     <string name="no_internet">لا يوجد اتصال بالإنترنت. عرض آخر تحديث.</string>
+    <string name="feels_like">الشعور الحقيقى</string>
+    <string name="invalid_location">تم تحديد موقع غير صالح</string>
+    <string name="showing_city_details">عرض تفاصيل %1$s</string>
+    <string name="location_source_title">مصدر الموقع</string>
+    <string name="location_source_gps">نظام تحديد المواقع</string>
+    <string name="location_source_map">الخريطة</string>
+
 </resources>

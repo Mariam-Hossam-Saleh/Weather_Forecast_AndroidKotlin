@@ -12,6 +12,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.weather_forecast.MapActivity
@@ -20,7 +21,7 @@ import com.example.weather_forecast.databinding.FragmentSearchBinding
 import com.example.weather_forecast.model.database.WeatherDatabase
 import com.example.weather_forecast.model.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.model.network.RetrofitHelper
-import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp.WeatherRemoteDataSourceImp
+import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.search.viewmodel.SearchViewModel
@@ -43,11 +44,18 @@ class SearchFragment : Fragment(), OnLocationClickListener {
             result.data?.let { data ->
                 val latitude = data.getDoubleExtra("latitude", 0.0)
                 val longitude = data.getDoubleExtra("longitude", 0.0)
+                val source = data.getStringExtra("source")
 
-                if (latitude != 0.0 && longitude != 0.0) {
+                if (latitude != 0.0 && longitude != 0.0 && source == "map") {
+                    // Save to SharedPreferences as default map location
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    prefs.edit()
+                        .putFloat("lastMapLatitude", latitude.toFloat())
+                        .putFloat("lastMapLongitude", longitude.toFloat())
+                        .apply()
                     navigateToHomeWithLocation(latitude, longitude)
                 } else {
-                    Toast.makeText(requireContext(), "Invalid location selected", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.invalid_location, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -81,9 +89,8 @@ class SearchFragment : Fragment(), OnLocationClickListener {
                     WeatherLocalDataSourceImp(WeatherDatabase.getInstance(requireContext()).weatherDao())
                 )
             )
-        ).get(SearchViewModel::class.java)
+        )[SearchViewModel::class.java]
     }
-
 
     @SuppressLint("NotifyDataSetChanged")
     private fun setUpRecyclerView() {
@@ -101,7 +108,6 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         }
     }
 
-
     private fun setupUI() {
         requireActivity().findViewById<View>(R.id.app_bar_main)
             .setBackgroundResource(R.color.white)
@@ -118,6 +124,7 @@ class SearchFragment : Fragment(), OnLocationClickListener {
         val intent = Intent(requireContext(), MapActivity::class.java).apply {
             putExtra("latitude", lat)
             putExtra("longitude", lon)
+            putExtra("address", "Select Location")
         }
         mapActivityLauncher.launch(intent)
     }
@@ -128,6 +135,7 @@ class SearchFragment : Fragment(), OnLocationClickListener {
             Bundle().apply {
                 putDouble("selected_lat", lat)
                 putDouble("selected_lon", lon)
+                putBoolean("isFromMapSelection", true) // Indicate map selection
             }
         )
     }
@@ -138,8 +146,9 @@ class SearchFragment : Fragment(), OnLocationClickListener {
             Bundle().apply {
                 putDouble("selected_lat", weather.lat)
                 putDouble("selected_lon", weather.lon)
+                putBoolean("isFromMapSelection", false) // Favorite selection
             }
         )
-        Toast.makeText(requireContext(), "Showing ${weather.cityName} details", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), getString(R.string.showing_city_details, weather.cityName), Toast.LENGTH_SHORT).show()
     }
 }

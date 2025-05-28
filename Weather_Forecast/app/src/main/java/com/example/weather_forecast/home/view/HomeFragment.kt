@@ -1,6 +1,7 @@
 package com.example.weather_forecast.home.view
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -19,6 +21,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.weather_forecast.MapActivity
 import com.example.weather_forecast.R
 import com.example.weather_forecast.databinding.FragmentHomeBinding
 import com.example.weather_forecast.home.viewmodel.HomeViewModel
@@ -26,6 +29,7 @@ import com.example.weather_forecast.home.viewmodel.HomeViewModelFactory
 import com.example.weather_forecast.model.database.WeatherDatabase
 import com.example.weather_forecast.model.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.model.network.RetrofitHelper
+import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
 import com.example.weather_forecast.model.pojos.getWeatherStateResId
@@ -33,7 +37,6 @@ import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.utils.NetworkUtils
 import com.example.weather_forecast.utils.location.LocationPermissionHandler
 import androidx.preference.PreferenceManager
-import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp.WeatherRemoteDataSourceImp
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -56,6 +59,30 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private var lastLongitude: Double? = null
     private var currentCityName: String? = null
     private var isFromSearchFragment: Boolean = false
+    private var isFromMapActivity: Boolean = false
+    private var isFromMapSelection: Boolean = false
+
+    private val mapActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            result.data?.let { data ->
+                val latitude = data.getDoubleExtra("latitude", 0.0)
+                val longitude = data.getDoubleExtra("longitude", 0.0)
+                val source = data.getStringExtra("source")
+                if (latitude != 0.0 && longitude != 0.0 && source == "map") {
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    prefs.edit()
+                        .putFloat("lastMapLatitude", latitude.toFloat())
+                        .putFloat("lastMapLongitude", longitude.toFloat())
+                        .apply()
+                    isFromMapActivity = true
+                    isFromSearchFragment = false
+                    lastLatitude = latitude
+                    lastLongitude = longitude
+                    fetchWeatherForLocation(latitude, longitude)
+                }
+            }
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,10 +93,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             lastLatitude = it.getDouble("lastLatitude", 0.0).takeIf { d -> d != 0.0 }
             lastLongitude = it.getDouble("lastLongitude", 0.0).takeIf { d -> d != 0.0 }
             isFromSearchFragment = it.getBoolean("isFromSearchFragment", false)
+            isFromMapActivity = it.getBoolean("isFromMapActivity", false)
+            isFromMapSelection = it.getBoolean("isFromMapSelection", false)
         }
         arguments?.let {
             val selectedLat = it.getDouble("selected_lat", 0.0)
             val selectedLon = it.getDouble("selected_lon", 0.0)
+            isFromMapSelection = it.getBoolean("isFromMapSelection", false)
             if (selectedLat != 0.0 && selectedLon != 0.0) {
                 isFromSearchFragment = true
                 lastLatitude = selectedLat
@@ -95,7 +125,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             fragment = this,
             onLocationFetched = { latitude, longitude ->
                 Log.d("HomeFragment", "Location fetched: lat=$latitude, lon=$longitude")
-                if (!isFromSearchFragment && hasLocationChanged(latitude, longitude)) {
+                if (!isFromSearchFragment && !isFromMapActivity && hasLocationChanged(latitude, longitude)) {
                     lastLatitude = latitude
                     lastLongitude = longitude
                     fetchWeatherForLocation(latitude, longitude)
@@ -119,8 +149,43 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         setUpRecyclerView()
         setCurrentWeatherInfo()
 
-        if (isFromSearchFragment && lastLatitude != null && lastLongitude != null) {
-            fetchWeatherForLocation(lastLatitude!!, lastLongitude!!)
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val locationSource = prefs.getString("location_source", "gps") ?: "gps"
+        if (isFromSearchFragment) {
+            lastLatitude?.let { lat ->
+                lastLongitude?.let { lon ->
+                    if (isFromMapSelection) {
+                        // Update saved map coordinates for map-selected location from SearchFragment
+                        prefs.edit()
+                            .putFloat("lastMapLatitude", lat.toFloat())
+                            .putFloat("lastMapLongitude", lon.toFloat())
+                            .apply()
+                        isFromMapActivity = true
+                    }
+                    fetchWeatherForLocation(lat, lon)
+                }
+            }
+        } else if (locationSource == "map") {
+            val savedLat = prefs.getFloat("lastMapLatitude", 0f).toDouble()
+            val savedLon = prefs.getFloat("lastMapLongitude", 0f).toDouble()
+            if (savedLat != 0.0 && savedLon != 0.0 && !isFromMapActivity) {
+                lastLatitude = savedLat
+                lastLongitude = savedLon
+                fetchWeatherForLocation(savedLat, savedLon)
+            } else if (!isFromMapActivity) {
+                val intent = Intent(requireContext(), MapActivity::class.java).apply {
+                    putExtra("latitude", lastLatitude ?: 0.0)
+                    putExtra("longitude", lastLongitude ?: 0.0)
+                    putExtra("address", "Select Location")
+                }
+                mapActivityLauncher.launch(intent)
+            } else {
+                lastLatitude?.let { lat ->
+                    lastLongitude?.let { lon ->
+                        fetchWeatherForLocation(lat, lon)
+                    }
+                }
+            }
         } else {
             locationHandler.requestLocationPermission()
         }
@@ -163,12 +228,12 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
         }
 
-//        homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
-//            error?.let {
-//                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-//                Log.e("HomeFragment", "Error: $it")
-//            }
-//        }
+        homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+            error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                Log.e("HomeFragment", "Error: $it")
+            }
+        }
 
         binding.btnEnableLocation.setOnClickListener {
             Log.d("HomeFragment", "Enable Location button clicked")
@@ -209,11 +274,20 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
     override fun onResume() {
         super.onResume()
-        if (!isFromSearchFragment) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val locationSource = prefs.getString("location_source", "gps") ?: "gps"
+        if (locationSource == "gps" && !isFromSearchFragment && !isFromMapActivity) {
             locationHandler.fetchCurrentLocation()
+        } else if (locationSource == "map" && !isFromSearchFragment && !isFromMapActivity) {
+            val savedLat = prefs.getFloat("lastMapLatitude", 0f).toDouble()
+            val savedLon = prefs.getFloat("lastMapLongitude", 0f).toDouble()
+            if (savedLat != 0.0 && savedLon != 0.0) {
+                lastLatitude = savedLat
+                lastLongitude = savedLon
+                fetchWeatherForLocation(savedLat, savedLon)
+            }
         }
-        // Refresh weather data to reflect unit changes
-        if (lastLatitude != null && lastLongitude != null) {
+        if (lastLatitude != null && lastLongitude != null && (isFromSearchFragment || isFromMapActivity)) {
             fetchWeatherForLocation(lastLatitude!!, lastLongitude!!)
         }
     }
@@ -222,6 +296,9 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         super.onStop()
         lastLatitude = null
         lastLongitude = null
+        isFromSearchFragment = false
+        isFromMapActivity = false
+        isFromMapSelection = false
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -229,6 +306,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         outState.putDouble("lastLatitude", lastLatitude ?: 0.0)
         outState.putDouble("lastLongitude", lastLongitude ?: 0.0)
         outState.putBoolean("isFromSearchFragment", isFromSearchFragment)
+        outState.putBoolean("isFromMapActivity", isFromMapActivity)
+        outState.putBoolean("isFromMapSelection", isFromMapSelection)
     }
 
     private fun setUpRecyclerView() {
@@ -257,7 +336,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         val pressureUnit = prefs.getString("pressure_unit", "hPa") ?: "hPa"
         val visibilityUnit = prefs.getString("visibility_unit", "Meters") ?: "Meters"
 
-        // Map unit keys to localized display names
         val temperatureUnitDisplay = when (temperatureUnit) {
             "Celsius" -> getString(R.string.temperature_celsius)
             "Fahrenheit" -> getString(R.string.temperature_fahrenheit)
@@ -290,25 +368,30 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             homeViewModel.getDailyWeatherByCity(currentCityName!!)
             if (currentWeather != null) {
                 binding.apply {
-                    // Convert temperature based on selected unit
                     val temp = when (temperatureUnit) {
                         "Celsius" -> currentWeather.mainTemp
                         "Fahrenheit" -> (currentWeather.mainTemp * 9 / 5) + 32
                         "Kelvin" -> currentWeather.mainTemp + 273.15
                         else -> currentWeather.mainTemp
                     }
-                    currentTemp.text = "${String.format("%.1f", temp.toDouble())}${getTemperatureUnitSymbol(temperatureUnitDisplay)}"
+                    currentTemp.text = "${String.format("%.1f", temp.toDouble())}${getTemperatureUnitSymbol(temperatureUnit)}"
 
-                    // Convert wind speed based on selected unit
+                    val feelslike = when (temperatureUnit) {
+                        "Celsius" -> currentWeather.mainFeels_like
+                        "Fahrenheit" -> (currentWeather.mainFeels_like * 9 / 5) + 32
+                        "Kelvin" -> currentWeather.mainFeels_like + 273.15
+                        else -> currentWeather.mainFeels_like
+                    }
+                    feelsLike.text = "${String.format("%.1f", feelslike.toDouble())}${getTemperatureUnitSymbol(temperatureUnit)}"
+
                     val windSpeed = when (windSpeedUnit) {
                         "m/s" -> currentWeather.windSpeed
                         "km/h" -> currentWeather.windSpeed * 3.6
                         "mph" -> currentWeather.windSpeed * 2.23694
                         else -> currentWeather.windSpeed
                     }
-                    currentWindSpeed.text = "${String.format("%.1f", windSpeed)} $windSpeedUnitDisplay"
+                    currentWindSpeed.text = "${String.format("%.1f", windSpeed.toDouble())} $windSpeedUnitDisplay"
 
-                    // Convert pressure based on selected unit
                     val pressure = when (pressureUnit) {
                         "hPa" -> currentWeather.mainPressure.toDouble()
                         "mb" -> currentWeather.mainPressure.toDouble()
@@ -318,7 +401,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                     }
                     currentPressure.text = "${String.format("%.1f", pressure)} $pressureUnitDisplay"
 
-                    // Convert visibility based on selected unit
                     val visibility = when (visibilityUnit) {
                         "Meters" -> currentWeather.visibility.toDouble()
                         "Kilometers" -> currentWeather.visibility / 1000.0
@@ -330,10 +412,11 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                     currentState.text = currentWeather.weatherMain
                     currentDateAndTime.text = SimpleDateFormat("EEE, MMM d, HH:mm", Locale.getDefault())
                         .format(Date(currentWeather.dt * 1000))
-                    currentCity.text = currentWeather.cityName
+                    currentCity.text = currentCityName
                     humidity.text = "${currentWeather.mainHumidity}%"
                     sunrise.text = formatUnixTimeToLocalTime(currentWeather.sysSunrise)
                     sunset.text = formatUnixTimeToLocalTime(currentWeather.sysSunset)
+                    clouds.text = "${currentWeather.clouds}%"
                     Log.i("TempMinMax", "Min: ${currentWeather.mainTemp_min}, Max: ${currentWeather.mainTemp_max}")
                     Glide.with(requireContext())
                         .load(getIconResId(currentWeather.weatherIcon))
@@ -357,6 +440,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         imgIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.nowifi))
                         todayRecycleView.visibility = View.GONE
                         nextDaysRecycleView.visibility = View.GONE
+                        detailsContainer.visibility = View.GONE
                         requireActivity().findViewById<View>(R.id.app_bar_main)
                             .setBackgroundResource(R.drawable.clear1)
                     }
@@ -367,12 +451,9 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
     private fun getTemperatureUnitSymbol(unit: String): String {
         return when (unit) {
-            "Celsius" -> "°C"
-            "Fahrenheit" -> "°F"
-            "Kelvin" -> "K"
-            "سيلزيوس" -> "°س"
-            "كلفن" -> "°ك"
-            "فهرنهايت" -> "°ف"
+            "Celsius", getString(R.string.temperature_celsius) -> "°C"
+            "Fahrenheit", getString(R.string.temperature_fahrenheit) -> "°F"
+            "Kelvin", getString(R.string.temperature_kelvin) -> "K"
             else -> "°C"
         }
     }
@@ -396,11 +477,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             if (currentCityName != null) {
                 homeViewModel.getDailyWeatherByCity(currentCityName!!)
             }
-            Toast.makeText(
-                requireContext(),
-                R.string.no_internet,
-                Toast.LENGTH_LONG
-            ).show()
+            Toast.makeText(requireContext(), R.string.no_internet, Toast.LENGTH_LONG).show()
         }
     }
 

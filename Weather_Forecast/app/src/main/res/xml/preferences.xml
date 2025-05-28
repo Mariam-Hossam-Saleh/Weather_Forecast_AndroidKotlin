@@ -35,4 +35,11 @@
         android:entryValues="@array/visibility_values"
         android:defaultValue="Meters"
         android:summary="%s" />
+    <ListPreference
+        android:key="location_source"
+        android:title="@string/location_source_title"
+        android:entries="@array/location_sources"
+        android:entryValues="@array/location_source_values"
+        android:defaultValue="gps"
+        android:summary="%s" />
 </PreferenceScreen>

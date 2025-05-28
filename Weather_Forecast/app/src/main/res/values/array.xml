@@ -59,4 +59,13 @@
         <item>Kilometers</item>
         <item>Miles</item>
     </string-array>
+
+    <string-array name="location_sources">
+        <item>@string/location_source_gps</item>
+        <item>@string/location_source_map</item>
+    </string-array>
+    <string-array name="location_source_values">
+        <item>gps</item>
+        <item>map</item>
+    </string-array>
 </resources>

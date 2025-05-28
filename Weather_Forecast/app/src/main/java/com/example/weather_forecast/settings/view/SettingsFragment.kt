@@ -1,53 +1,68 @@
-//package com.example.weather_forecast.settings.view
-//
-//import android.os.Bundle
-//import androidx.fragment.app.Fragment
-//import android.view.LayoutInflater
-//import android.view.View
-//import android.view.ViewGroup
-//import com.example.weather_forecast.databinding.FragmentSettingsBinding
-//
-//class SettingsFragment : Fragment() {
-//
-//    private lateinit var binding: FragmentSettingsBinding
-//
-//    override fun onCreateView(
-//        inflater: LayoutInflater, container: ViewGroup?,
-//        savedInstanceState: Bundle?
-//    ): View {
-//        binding = FragmentSettingsBinding.inflate(inflater, container, false)
-//        return binding.root
-//    }
-//
-//}
 package com.example.weather_forecast.settings.view
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
+import com.example.weather_forecast.MapActivity
 import com.example.weather_forecast.R
 import java.util.*
 
 class SettingsFragment : PreferenceFragmentCompat() {
+    private val mapActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+            result.data?.let { data ->
+                val latitude = data.getDoubleExtra("latitude", 0.0)
+                val longitude = data.getDoubleExtra("longitude", 0.0)
+                if (latitude != 0.0 && longitude != 0.0) {
+                    val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                    prefs.edit()
+                        .putFloat("lastMapLatitude", latitude.toFloat())
+                        .putFloat("lastMapLongitude", longitude.toFloat())
+                        .apply()
+                }
+            }
+        }
+    }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        // Handle language preference
         val languagePreference = findPreference<ListPreference>("language")
         languagePreference?.setOnPreferenceChangeListener { _, newValue ->
             updateLanguage(newValue as String)
             true
         }
 
-        // Set summaries for all preferences
-        updatePreferenceSummary("language", "Language")
-        updatePreferenceSummary("wind_speed_unit", "Wind Speed Unit")
-        updatePreferenceSummary("pressure_unit", "Pressure Unit")
-        updatePreferenceSummary("temperature_unit", "Temperature Unit")
-        updatePreferenceSummary("elevation_unit", "Elevation Unit")
-        updatePreferenceSummary("visibility_unit", "Visibility Unit")
+        val locationSourcePreference = findPreference<ListPreference>("location_source")
+        locationSourcePreference?.setOnPreferenceChangeListener { _, newValue ->
+            if (newValue == "map") {
+                val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
+                prefs.edit()
+                    .remove("lastMapLatitude")
+                    .remove("lastMapLongitude")
+                    .apply()
+                val intent = Intent(requireContext(), MapActivity::class.java).apply {
+                    putExtra("latitude", 0.0)
+                    putExtra("longitude", 0.0)
+                    putExtra("address", "Select Location")
+                }
+                mapActivityLauncher.launch(intent)
+            }
+            true
+        }
+
+        updatePreferenceSummary("language")
+        updatePreferenceSummary("location_source")
+        updatePreferenceSummary("wind_speed_unit")
+        updatePreferenceSummary("pressure_unit")
+        updatePreferenceSummary("temperature_unit")
+        updatePreferenceSummary("elevation_unit")
+        updatePreferenceSummary("visibility_unit")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -66,10 +81,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val config = Configuration()
         config.setLocale(locale)
         requireContext().resources.updateConfiguration(config, requireContext().resources.displayMetrics)
-        requireActivity().recreate() // Restart activity to apply language
+        requireActivity().recreate()
     }
 
-    private fun updatePreferenceSummary(key: String, title: String) {
+    private fun updatePreferenceSummary(key: String) {
         val preference = findPreference<ListPreference>(key)
         preference?.summaryProvider = ListPreference.SimpleSummaryProvider.getInstance()
     }

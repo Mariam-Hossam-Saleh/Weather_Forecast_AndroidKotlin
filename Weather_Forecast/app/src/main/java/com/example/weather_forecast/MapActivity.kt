@@ -20,7 +20,7 @@ class MapActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Initialize osmdroid configuration
+        // Initialize osmdroid configuration (OpenStreetMap)
         val ctx: Context = applicationContext
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx))
         Configuration.getInstance().userAgentValue = packageName
@@ -71,6 +71,7 @@ class MapActivity : AppCompatActivity() {
                     setResult(RESULT_OK, Intent().apply {
                         putExtra("latitude", point.latitude)
                         putExtra("longitude", point.longitude)
+                        putExtra("source", "map")
                     })
                     finish()
                 }

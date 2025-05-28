@@ -1,10 +1,8 @@
-package com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp
+package com.example.weather_forecast.model.network
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import com.example.weather_forecast.model.network.WeatherRemoteDataSource
-import com.example.weather_forecast.model.network.WeatherService
 import com.example.weather_forecast.model.pojos.CurrentWeatherResponce.Companion.toCurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
