@@ -189,8 +189,6 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             val navController = NavHostFragment.findNavController(this@HomeFragment)
             navController.navigate(R.id.action_nav_home_to_nav_settings)
             Toast.makeText(requireContext(), "Settings Clicked", Toast.LENGTH_SHORT).show()
-            requireActivity().findViewById<View>(R.id.app_bar_main)
-                .setBackgroundResource(R.drawable.mist4)
         }
 
         binding.search.setOnClickListener {
@@ -290,12 +288,12 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
                     // Convert visibility based on selected unit
                     val visibility = when (visibilityUnit) {
-                        "Meters" -> currentWeather.visibility.toDouble()
-                        "Kilometers" -> currentWeather.visibility / 1000.0
+                        "m" -> currentWeather.visibility.toDouble()
+                        "km" -> currentWeather.visibility / 1000.0
                         "Miles" -> currentWeather.visibility / 1609.34
                         else -> currentWeather.visibility.toDouble()
                     }
-                    clouds.text = "${String.format("%.1f", visibility)} $visibilityUnit" // Replace with visibility.text if available
+                    currentVisibility.text = "${String.format("%.1f", visibility)} $visibilityUnit"
 
                     currentState.text = currentWeather.weatherMain
                     currentDateAndTime.text = SimpleDateFormat("EEE, MMM d, HH:mm", Locale.getDefault())

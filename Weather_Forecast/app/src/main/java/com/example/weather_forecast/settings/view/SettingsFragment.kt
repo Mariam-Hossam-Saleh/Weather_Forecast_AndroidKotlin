@@ -24,6 +24,7 @@ package com.example.weather_forecast.settings.view
 
 import android.content.res.Configuration
 import android.os.Bundle
+import android.view.View
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import com.example.weather_forecast.R
@@ -47,6 +48,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
         updatePreferenceSummary("temperature_unit", "Temperature Unit")
         updatePreferenceSummary("elevation_unit", "Elevation Unit")
         updatePreferenceSummary("visibility_unit", "Visibility Unit")
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        view.setBackgroundResource(R.drawable.mist2)
+        listView.setPadding(0, 140, 0, 0)
     }
 
     private fun updateLanguage(language: String) {

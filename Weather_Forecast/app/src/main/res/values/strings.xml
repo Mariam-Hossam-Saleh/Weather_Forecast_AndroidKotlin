@@ -22,4 +22,43 @@
     <string name="sunrise">Sunrise</string>
     <string name="sunset">Sunset</string>
 
+    <!-- Preference titles -->
+    <string name="language_title">Language</string>
+    <string name="wind_speed_unit_title">Wind Speed Unit</string>
+    <string name="pressure_unit_title">Pressure Unit</string>
+    <string name="temperature_unit_title">Temperature Unit</string>
+    <string name="elevation_unit_title">Elevation Unit</string>
+    <string name="visibility_unit_title">Visibility Unit</string>
+
+    <!-- Language entries -->
+    <string name="language_system">Match System Language</string>
+    <string name="language_english">English</string>
+    <string name="language_arabic">Arabic</string>
+
+    <!-- Wind speed entries -->
+    <string name="wind_speed_ms">m/s</string>
+    <string name="wind_speed_kmh">km/h</string>
+    <string name="wind_speed_mph">mph</string>
+
+    <!-- Pressure entries -->
+    <string name="pressure_hpa">hPa</string>
+    <string name="pressure_mb">mb</string>
+    <string name="pressure_inhg">in Hg</string>
+    <string name="pressure_mmhg">mm Hg</string>
+
+    <!-- Temperature entries -->
+    <string name="temperature_celsius">Celsius</string>
+    <string name="temperature_kelvin">Kelvin</string>
+    <string name="temperature_fahrenheit">Fahrenheit</string>
+
+    <!-- Elevation entries -->
+    <string name="elevation_meters">Meters</string>
+    <string name="elevation_feet">Feet</string>
+
+    <!-- Visibility entries -->
+    <string name="visibility_meters">Meters</string>
+    <string name="visibility_kilometers">Kilometers</string>
+    <string name="visibility_miles">Miles</string>
+    <string name="visibility">Visibility</string>
+
 </resources>

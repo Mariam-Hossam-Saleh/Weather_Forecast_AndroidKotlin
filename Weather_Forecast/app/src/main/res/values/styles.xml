@@ -10,7 +10,7 @@
         <!-- Summary text color -->
         <item name="android:textColorSecondary">@color/white</item>
         <!-- Optional: Background color -->
-        <item name="android:background">@drawable/mist1</item>
+        <item name="android:background">@drawable/mist2</item>
     </style>
 
 </resources>

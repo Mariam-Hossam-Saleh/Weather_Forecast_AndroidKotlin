@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -25,7 +26,7 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
             parent,
             false
         )
-        return WeatherViewHolder(binding)
+        return WeatherViewHolder(binding,context)
     }
 
     override fun getItemCount(): Int {
@@ -50,15 +51,35 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
 
     class WeatherViewHolder(
         val binding: ItemDaysWeatherBinding,
+        private val context: Context
     ) : RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
         fun bind(weather: WeatherEntity) {
+            val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+            val temperatureUnit = prefs.getString("temperature_unit", "Celsius") ?: "Celsius"
+            val windSpeedUnit = prefs.getString("wind_speed_unit", "m/s") ?: "m/s"
+            val pressureUnit = prefs.getString("pressure_unit", "hPa") ?: "hPa"
+            val visibilityUnit = prefs.getString("visibility_unit", "Meters") ?: "Meters"
             binding.apply {
                 Date.text = SimpleDateFormat("EEE", Locale.getDefault())
                     .format(Date(weather.dt * 1000))
-                minMaxTemp.text = "${weather.mainTemp_min}/${weather.mainTemp_max}°C"
+                val temp = when (temperatureUnit) {
+                    "Celsius" -> weather.mainTemp
+                    "Fahrenheit" -> (weather.mainTemp * 9 / 5) + 32
+                    "Kelvin" -> weather.mainTemp + 273.15
+                    else -> weather.mainTemp
+                }
+                minMaxTemp.text = "${String.format("%.1f", temp)}${getTemperatureUnitSymbol(temperatureUnit)}"
                 mainStatus.text = weather.weatherMain
+            }
+        }
+        private fun getTemperatureUnitSymbol(unit: String): String {
+            return when (unit) {
+                "Celsius" -> "°C"
+                "Fahrenheit" -> "°F"
+                "Kelvin" -> "K"
+                else -> "°C"
             }
         }
     }

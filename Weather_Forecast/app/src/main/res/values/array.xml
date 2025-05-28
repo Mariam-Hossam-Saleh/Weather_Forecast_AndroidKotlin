@@ -1,9 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="languages">
-        <item>Match System Language</item>
-        <item>English</item>
-        <item>Arabic</item>
+        <item>@string/language_system</item>
+        <item>@string/language_english</item>
+        <item>@string/language_arabic</item>
     </string-array>
     <string-array name="language_values">
         <item>system</item>
@@ -11,9 +10,9 @@
         <item>ar</item>
     </string-array>
     <string-array name="wind_speed_units">
-        <item>m/s</item>
-        <item>km/h</item>
-        <item>mph</item>
+        <item>@string/wind_speed_ms</item>
+        <item>@string/wind_speed_kmh</item>
+        <item>@string/wind_speed_mph</item>
     </string-array>
     <string-array name="wind_speed_values">
         <item>m/s</item>
@@ -21,10 +20,10 @@
         <item>mph</item>
     </string-array>
     <string-array name="pressure_units">
-        <item>hPa</item>
-        <item>mb</item>
-        <item>in Hg</item>
-        <item>mm Hg</item>
+        <item>@string/pressure_hpa</item>
+        <item>@string/pressure_mb</item>
+        <item>@string/pressure_inhg</item>
+        <item>@string/pressure_mmhg</item>
     </string-array>
     <string-array name="pressure_values">
         <item>hPa</item>
@@ -33,9 +32,9 @@
         <item>mm Hg</item>
     </string-array>
     <string-array name="temperature_units">
-        <item>Celsius</item>
-        <item>Kelvin</item>
-        <item>Fahrenheit</item>
+        <item>@string/temperature_celsius</item>
+        <item>@string/temperature_kelvin</item>
+        <item>@string/temperature_fahrenheit</item>
     </string-array>
     <string-array name="temperature_values">
         <item>Celsius</item>
@@ -43,21 +42,21 @@
         <item>Fahrenheit</item>
     </string-array>
     <string-array name="elevation_units">
-        <item>Meters</item>
-        <item>Feet</item>
+        <item>@string/elevation_meters</item>
+        <item>@string/elevation_feet</item>
     </string-array>
-    <string-array name="elevation_units_values">
+    <string-array name="elevation_values">
         <item>Meters</item>
         <item>Feet</item>
     </string-array>
     <string-array name="visibility_units">
-        <item>Meters</item>
-        <item>Kilometers</item>
-        <item>Miles</item>
+        <item>@string/visibility_meters</item>
+        <item>@string/visibility_kilometers</item>
+        <item>@string/visibility_miles</item>
     </string-array>
     <string-array name="visibility_values">
-        <item>Meters</item>
-        <item>Kilometers</item>
+        <item>m</item>
+        <item>km</item>
         <item>Miles</item>
     </string-array>
 </resources>
