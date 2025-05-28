@@ -115,8 +115,8 @@ fun getIconResId(iconCode: String): Int {
         "10n" -> R.drawable.rain_icon
         "11d" -> R.drawable.tornado
         "11n" -> R.drawable.tornado
-        "13d" -> R.drawable.snowflake
-        "13n" -> R.drawable.snowflake
+        "13d" -> R.drawable.snowicon
+        "13n" -> R.drawable.snowicon
         "50d" -> R.drawable.haze
         "50n" -> R.drawable.haze
         else -> R.drawable.ic_01d
@@ -125,10 +125,10 @@ fun getIconResId(iconCode: String): Int {
 
 fun getWeatherStateResId(weatherMain: String): Int {
     return when (weatherMain) {
-        "Clear" -> R.drawable.c3
+        "Clear" -> R.drawable.c4
         "Clouds" -> R.drawable.cloud7
         "Rain" -> R.drawable.rain4
-        "Snow" -> R.drawable.snow2
+        "Snow" -> R.drawable.snowphoto
         "Thunderstorm" -> R.drawable.thunderstorm2
         "Drizzle" -> R.drawable.drizzle
         "Mist" -> R.drawable.mist2

@@ -25,7 +25,6 @@ import com.google.android.gms.location.LocationServices
 class LocationPermissionHandler(
     private val fragment: Fragment,
     private val onLocationFetched: (latitude: Double, longitude: Double) -> Unit,
-//    private val onShowPermissionDeniedDialog: () -> Unit,
     private val onShowAllowLocationCard: () -> Unit
 ) {
     private val context: Context = fragment.requireContext()
@@ -70,11 +69,11 @@ class LocationPermissionHandler(
         } else {
             Log.d("LocationPermissionHandler", "Location services still disabled")
             onShowAllowLocationCard.invoke()
-            Toast.makeText(
-                context,
-                "Location services are still disabled. Please enable them.",
-                Toast.LENGTH_LONG
-            ).show()
+//            Toast.makeText(
+//                context,
+//                "Location services are still disabled. Please enable them.",
+//                Toast.LENGTH_LONG
+//            ).show()
         }
     }
 
@@ -91,6 +90,7 @@ class LocationPermissionHandler(
                 Log.d("LocationPermissionHandler", "Permissions already granted")
                 fetchCurrentLocation()
             }
+
             fragment.shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION) -> {
                 Log.d("LocationPermissionHandler", "Showing permission rationale")
                 Toast.makeText(
@@ -105,10 +105,12 @@ class LocationPermissionHandler(
                     )
                 )
             }
+
             else -> {
                 Log.d("LocationPermissionHandler", "Checking if permissions are permanently denied")
                 val sharedPrefs = context.getSharedPreferences("WeatherPrefs", Context.MODE_PRIVATE)
-                val isPermanentlyDenied = sharedPrefs.getBoolean("location_permission_denied", false)
+                val isPermanentlyDenied =
+                    sharedPrefs.getBoolean("location_permission_denied", false)
                 if (isPermanentlyDenied) {
                     Toast.makeText(
                         context,
@@ -147,18 +149,15 @@ class LocationPermissionHandler(
                 if (location != null) {
                     onLocationFetched.invoke(location.latitude, location.longitude)
                 } else {
-                    Log.d("LocationPermissionHandler", "Last location is null, requesting fresh location")
+                    Log.d(
+                        "LocationPermissionHandler",
+                        "Last location is null, requesting fresh location"
+                    )
                     requestFreshLocation()
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e("LocationPermissionHandler", "Failed to get location: ${exception.message}")
-//                Toast.makeText(
-//                    context,
-//                    "Failed to get location. Using default location (Cairo).",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//                onLocationFetched.invoke(30.0444, 31.2357) // Cairo coordinates
             }
     }
 
@@ -242,32 +241,4 @@ class LocationPermissionHandler(
             .setCancelable(false)
             .show()
     }
-
-//    fun getCurrentLocation() {
-//        if (isPermissionGranted()) {
-//            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(fragment.requireContext())
-//            fusedLocationClient.lastLocation
-//                .addOnSuccessListener { location ->
-//                    if (location != null) {
-//                        onLocationFetched(location.latitude, location.longitude)
-//                    } else {
-//                        // Force new location request if last location is null
-//                        requestNewLocationData()
-//                    }
-//                }
-//                .addOnFailureListener {
-//                    onShowAllowLocationCard()
-//                }
-//        } else {
-//            onShowAllowLocationCard()
-//        }
-//    }
-//
-//    private fun isPermissionGranted(): Boolean {
-//        return ContextCompat.checkSelfPermission(
-//            fragment.requireContext(),
-//            Manifest.permission.ACCESS_FINE_LOCATION
-//        ) == PackageManager.PERMISSION_GRANTED
-//    }
-
 }

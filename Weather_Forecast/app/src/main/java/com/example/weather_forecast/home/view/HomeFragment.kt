@@ -104,6 +104,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 binding.cardView.visibility = View.VISIBLE
                 binding.todayRecycleView.visibility = View.VISIBLE
                 binding.nextDaysRecycleView.visibility = View.VISIBLE
+                binding.detailsContainer.visibility = View.VISIBLE
             },
             onShowAllowLocationCard = {
                 Log.d("HomeFragment", "Showing Allow Location card due to permission denial")
@@ -111,6 +112,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 binding.cardView.visibility = View.GONE
                 binding.todayRecycleView.visibility = View.GONE
                 binding.nextDaysRecycleView.visibility = View.GONE
+                binding.detailsContainer.visibility = View.GONE
             }
         )
 
@@ -161,12 +163,12 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
         }
 
-        homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
-            error?.let {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
-                Log.e("HomeFragment", "Error: $it")
-            }
-        }
+//        homeViewModel.errorMessage.observe(viewLifecycleOwner) { error ->
+//            error?.let {
+//                Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+//                Log.e("HomeFragment", "Error: $it")
+//            }
+//        }
 
         binding.btnEnableLocation.setOnClickListener {
             Log.d("HomeFragment", "Enable Location button clicked")
@@ -304,7 +306,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         "mph" -> currentWeather.windSpeed * 2.23694
                         else -> currentWeather.windSpeed
                     }
-                    currentWindSpeed.text = "${String.format("%.1f", windSpeed.toDouble())} $windSpeedUnitDisplay"
+                    currentWindSpeed.text = "${String.format("%.1f", windSpeed)} $windSpeedUnitDisplay"
 
                     // Convert pressure based on selected unit
                     val pressure = when (pressureUnit) {
@@ -406,7 +408,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         if (lastLatitude == null || lastLongitude == null) return true
         val distance = FloatArray(1)
         android.location.Location.distanceBetween(lastLatitude!!, lastLongitude!!, newLat, newLon, distance)
-        return distance[0] > 1000 // 1km threshold
+        return distance[0] > 1000
     }
 
     override fun onWeatherClick(weather: WeatherEntity) {
