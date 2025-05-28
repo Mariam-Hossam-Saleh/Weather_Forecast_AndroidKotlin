@@ -1,3 +1,4 @@
+import java.util.Properties
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -40,6 +41,20 @@ android {
     buildFeatures {
         viewBinding = true
         dataBinding = true
+    }
+}
+
+fun getLocalProperty(key: String): String {
+    val properties = Properties()
+    // Use project.rootDir to point to the project root
+    val localPropertiesFile = file("${project.rootDir}/local.properties")
+    return if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { stream ->
+            properties.load(stream)
+            properties.getProperty(key) ?: ""
+        }
+    } else {
+        "" // Return empty string if file is missing
     }
 }
 
@@ -102,4 +117,18 @@ dependencies {
     implementation ("androidx.navigation:navigation-fragment-ktx:2.7.7")
     implementation ("androidx.navigation:navigation-ui-ktx:2.7.7")
     implementation ("androidx.lifecycle:lifecycle-livedata-ktx:2.8.6")
+
+    testImplementation ("androidx.test.ext:junit:1.1.3")
+    testImplementation ("androidx.test.espresso:espresso-core:3.4.0")
+    testImplementation ("org.hamcrest:hamcrest-library:2.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.8.2")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:2.0.21")
+    testImplementation("androidx.test:runner:1.6.2")
+    testImplementation("androidx.test:core:1.6.1")
+    testImplementation("androidx.test.ext:junit:1.2.1")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("io.mockk:mockk-android:1.13.17")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+    testImplementation("androidx.arch.core:core-testing:2.2.0")
+    testImplementation("org.hamcrest:hamcrest:2.2")
 }

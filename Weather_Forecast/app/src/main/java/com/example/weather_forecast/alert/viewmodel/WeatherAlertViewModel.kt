@@ -11,7 +11,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.weather_forecast.model.pojos.AlertEntity
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.receivers.AlertReceiver
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class WeatherAlertViewModel(
