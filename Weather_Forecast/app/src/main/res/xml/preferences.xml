@@ -32,7 +32,7 @@
         android:key="elevation_unit"
         android:title="Elevation Unit"
         android:entries="@array/elevation_units"
-        android:entryValues="@array/elevation_values"
+        android:entryValues="@array/elevation_units_values"
         android:defaultValue="Meters"
         android:summary="%s" />
     <ListPreference

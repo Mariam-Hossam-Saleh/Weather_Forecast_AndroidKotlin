@@ -189,6 +189,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             val navController = NavHostFragment.findNavController(this@HomeFragment)
             navController.navigate(R.id.action_nav_home_to_nav_settings)
             Toast.makeText(requireContext(), "Settings Clicked", Toast.LENGTH_SHORT).show()
+            requireActivity().findViewById<View>(R.id.app_bar_main)
+                .setBackgroundResource(R.drawable.mist4)
         }
 
         binding.search.setOnClickListener {

@@ -46,7 +46,7 @@
         <item>Meters</item>
         <item>Feet</item>
     </string-array>
-    <string-array name="elevation_values">
+    <string-array name="elevation_units_values">
         <item>Meters</item>
         <item>Feet</item>
     </string-array>

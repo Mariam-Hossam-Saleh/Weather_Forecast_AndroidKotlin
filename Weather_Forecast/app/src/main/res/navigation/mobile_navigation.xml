@@ -14,9 +14,6 @@
             android:id="@+id/action_nav_home_to_nav_search"
             app:destination="@id/nav_search" />
         <action
-            android:id="@+id/action_nav_home_to_nav_favorite"
-            app:destination="@id/nav_favorite" />
-        <action
             android:id="@+id/action_nav_home_to_nav_settings"
             app:destination="@id/nav_settings" />
     </fragment>
@@ -35,13 +32,13 @@
 
     <fragment
     android:id="@+id/nav_settings"
-    android:name="com.example.weather_forecast.ui.slideshow.SlideshowFragment"
+    android:name="com.example.weather_forecast.settings.view.SettingsFragment"
     android:label="@string/menu_favorite"
     tools:layout="@layout/fragment_slideshow" />
 
-    <fragment
-        android:id="@+id/nav_favorite"
-        android:name="com.example.weather_forecast.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_favorite"
-        tools:layout="@layout/fragment_slideshow" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_favorite"-->
+<!--        android:name="com.example.weather_forecast.ui.slideshow.SlideshowFragment"-->
+<!--        android:label="@string/menu_favorite"-->
+<!--        tools:layout="@layout/fragment_slideshow" />-->
 </navigation>

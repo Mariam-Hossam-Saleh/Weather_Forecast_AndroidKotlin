@@ -1,0 +1,16 @@
+<resources>
+    <!-- Base theme for the app (ensure it supports light/dark mode) -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+        <!-- Customize as needed -->
+    </style>
+
+    <style name="CustomPreferenceTheme" parent="PreferenceThemeOverlay">
+        <!-- Title text color -->
+        <item name="android:textColorPrimary">@color/white</item>
+        <!-- Summary text color -->
+        <item name="android:textColorSecondary">@color/white</item>
+        <!-- Optional: Background color -->
+        <item name="android:background">@drawable/mist1</item>
+    </style>
+
+</resources>
