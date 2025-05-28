@@ -21,8 +21,8 @@ interface WeatherDao {
     @Query("SELECT * FROM weather_table WHERE lat = :lat AND lon = :lon ORDER BY dt ASC")
     suspend fun getCityWeather(lat: Double,lon: Double): List<WeatherEntity>
 
-    @Query("SELECT * FROM current_weather_table")
-    suspend fun getCurrentWeather(): CurrentWeatherEntity
+    @Query("SELECT * FROM current_weather_table WHERE lat = :lat AND lon = :lon")
+    suspend fun getCurrentWeather(lat: Double, lon: Double): CurrentWeatherEntity
 
     @Query("DELETE FROM current_weather_table")
     suspend fun clearCurrentWeather()

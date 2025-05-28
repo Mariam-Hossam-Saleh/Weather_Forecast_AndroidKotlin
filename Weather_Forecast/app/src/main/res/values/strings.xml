@@ -24,6 +24,11 @@
     <string name="visibility">Visibility</string>
 
 
+    <!-- Visibility entries -->
+<!--    <string name="visibility_meters">m</string>-->
+<!--    <string name="visibility_kilometers">km</string>-->
+<!--    <string name="visibility_miles">mile</string>-->
+
     <!-- Preference titles -->
     <string name="language_title">Language</string>
     <string name="wind_speed_unit_title">Wind Speed Unit</string>
@@ -37,26 +42,45 @@
     <string name="language_english">English</string>
     <string name="language_arabic">Arabic</string>
 
-    <!-- Wind speed entries -->
+    <!-- Temperature units -->
+    <string name="temperature_celsius">Celsius</string>
+    <string name="temperature_fahrenheit">Fahrenheit</string>
+    <string name="temperature_kelvin">Kelvin</string>
+
+    <!-- Wind speed units -->
     <string name="wind_speed_ms">m/s</string>
     <string name="wind_speed_kmh">km/h</string>
     <string name="wind_speed_mph">mph</string>
 
-    <!-- Pressure entries -->
+    <!-- Pressure units -->
     <string name="pressure_hpa">hPa</string>
     <string name="pressure_mb">mb</string>
-    <string name="pressure_inhg">Hg</string>
+    <string name="pressure_inhg">in Hg</string>
     <string name="pressure_mmhg">mm Hg</string>
 
-    <!-- Temperature entries -->
-    <string name="temperature_celsius">Celsius</string>
-    <string name="temperature_kelvin">Kelvin</string>
-    <string name="temperature_fahrenheit">Fahrenheit</string>
+    <!-- Elevation units -->
+    <string name="elevation_meters">Meters</string>
+    <string name="elevation_feet">Feet</string>
 
-    <!-- Visibility entries -->
+    <!-- Visibility units -->
     <string name="visibility_meters">m</string>
     <string name="visibility_kilometers">km</string>
     <string name="visibility_miles">mile</string>
 
+    <!-- HomeFragment UI labels -->
+    <string name="temperature_label">Temperature</string>
+    <string name="wind_speed_label">Wind Speed</string>
+    <string name="pressure_label">Pressure</string>
+    <string name="visibility_label">Visibility</string>
+    <string name="humidity_label">Humidity</string>
+    <string name="sunrise_label">Sunrise</string>
+    <string name="sunset_label">Sunset</string>
+    <string name="no_network">No Network</string>
+    <string name="no_location">No location selected</string>
+    <string name="manage_cities">Manage your cities</string>
+    <string name="settings_clicked">Settings Clicked</string>
+    <string name="added_to_favorites">%1$s Added to Favorites</string>
+    <string name="removed_from_favorites">%1$s Removed from Favorites</string>
+    <string name="no_internet">No internet connection. Showing last update.</string>
 
 </resources>

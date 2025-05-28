@@ -13,7 +13,7 @@ interface WeatherLocalDataSource {
 
     suspend fun getCityWeather(lat: Double,lon: Double): List<WeatherEntity>
 
-    suspend fun getCurrentWeather(): CurrentWeatherEntity
+    suspend fun getCurrentWeather(lat: Double, lon: Double): CurrentWeatherEntity
 
     suspend fun clearOldWeather(timestamp: Long)
 

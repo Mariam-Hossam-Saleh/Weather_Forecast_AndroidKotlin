@@ -55,6 +55,8 @@ data class WeatherEntity(
 @Entity(tableName = "current_weather_table", primaryKeys = ["cityName"])
 data class CurrentWeatherEntity(
     val dt: Long,
+    val lat: Double,
+    val lon: Double,
     // Coord
     val coordLon: Double,
     val coordLat: Double,
@@ -107,15 +109,25 @@ fun getIconResId(iconCode: String): Int {
         "03n" -> R.drawable.ic_03n
         "04d" -> R.drawable.ic_04d
         "04n" -> R.drawable.ic_04n
+        "09d" -> R.drawable.rain_icon
+        "09n" -> R.drawable.rain_icon
+        "10d" -> R.drawable.rain_icon
+        "10n" -> R.drawable.rain_icon
+        "11d" -> R.drawable.tornado
+        "11n" -> R.drawable.tornado
+        "13d" -> R.drawable.snowflake
+        "13n" -> R.drawable.snowflake
+        "50d" -> R.drawable.haze
+        "50n" -> R.drawable.haze
         else -> R.drawable.ic_01d
     }
 }
 
 fun getWeatherStateResId(weatherMain: String): Int {
     return when (weatherMain) {
-        "Clear" -> R.drawable.clear2
+        "Clear" -> R.drawable.c3
         "Clouds" -> R.drawable.cloud7
-        "Rain" -> R.drawable.rain2
+        "Rain" -> R.drawable.rain4
         "Snow" -> R.drawable.snow2
         "Thunderstorm" -> R.drawable.thunderstorm2
         "Drizzle" -> R.drawable.drizzle

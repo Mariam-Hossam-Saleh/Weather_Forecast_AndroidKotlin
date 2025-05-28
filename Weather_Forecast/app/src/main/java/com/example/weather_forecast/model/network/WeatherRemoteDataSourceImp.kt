@@ -1,3 +1,4 @@
+package com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -66,7 +67,7 @@ class WeatherRemoteDataSourceImp(
                     units = units
                 )
                 Log.d("WeatherRemoteDataSource", "Current weather forecast response: $response")
-                response.toCurrentWeatherEntity(response.name)
+                response.toCurrentWeatherEntity(response.name,lat, lon)
 
             } catch (e: Exception) {
                 throw Exception("Failed to fetch current weather", e)

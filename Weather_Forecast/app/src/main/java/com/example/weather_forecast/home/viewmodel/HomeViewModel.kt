@@ -91,7 +91,7 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
                     apiKey = "e82d172019ed90076e2ec824decb3d40"
                 )
                 _todayWeather.value = result
-                repo.clearCurrentWeather()
+//                repo.clearCurrentWeather()
                 repo.insertCurrentWeather(result)
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to fetch current weather: ${e.message}"
@@ -102,12 +102,12 @@ class HomeViewModel(private val repo: WeatherRepository) : ViewModel() {
         }
     }
 
-    fun getStoredCurrentWeather() {
+    fun getStoredCurrentWeather(lat: Double, lon: Double) {
         viewModelScope.launch {
             _isLoading.value = true
             _errorMessage.value = null
             try {
-                val result = repo.getCurrentWeather(isRemote = false)
+                val result = repo.getCurrentWeather(isRemote = false,lat, lon)
                 _todayWeather.value = result
             } catch (e: Exception) {
                 _errorMessage.value = "Failed to get stored current weather: ${e.message}"

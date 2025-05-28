@@ -25,7 +25,7 @@ data class CurrentWeatherResponce(
     val cod: Int) {
     companion object {
         // WeatherItem to WeatherEntity Mapper
-        fun CurrentWeatherResponce.toCurrentWeatherEntity(cityName: String): CurrentWeatherEntity {
+        fun CurrentWeatherResponce.toCurrentWeatherEntity(cityName: String,lat: Double, lon:Double): CurrentWeatherEntity {
             return CurrentWeatherEntity(
                 coordLon = coord.lon,
                 coordLat = coord.lat,
@@ -58,6 +58,8 @@ data class CurrentWeatherResponce(
                 cityId = id,
                 cityName = this.name,
                 cod = cod,
+                lat = lat,
+                lon = lon,
             )
         }
     }

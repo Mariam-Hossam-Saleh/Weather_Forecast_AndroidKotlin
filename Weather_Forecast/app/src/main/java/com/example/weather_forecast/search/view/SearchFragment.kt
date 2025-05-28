@@ -1,6 +1,5 @@
 package com.example.weather_forecast.search.view
 
-import WeatherRemoteDataSourceImp
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -21,6 +20,7 @@ import com.example.weather_forecast.databinding.FragmentSearchBinding
 import com.example.weather_forecast.model.database.WeatherDatabase
 import com.example.weather_forecast.model.database.WeatherLocalDataSourceImp
 import com.example.weather_forecast.model.network.RetrofitHelper
+import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp.WeatherRemoteDataSourceImp
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.search.viewmodel.SearchViewModel

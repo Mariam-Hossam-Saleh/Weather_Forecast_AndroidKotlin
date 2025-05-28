@@ -54,7 +54,7 @@ class WeatherRepositoryImp (
             weatherRemoteDataSource.getCurrentWeatherOverNetwork(lat,lon,apiKey)
         }
         else {
-            weatherLocalDataSource.getCurrentWeather()
+            weatherLocalDataSource.getCurrentWeather(lat, lon)
         }
     }
 

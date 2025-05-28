@@ -27,8 +27,8 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:text="@string/date"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="15dp"
+            android:layout_marginStart="25dp"
+            android:layout_marginEnd="25dp"
             android:layout_gravity="center"
             android:gravity="center"
             tools:ignore="SmallSp" />
@@ -38,7 +38,7 @@
             android:layout_height="50dp"
             android:background="@android:color/transparent"
             android:layout_gravity="center"
-            android:layout_marginEnd="15dp"/>
+            android:layout_marginEnd="25dp"/>
 
         <TextView
             android:id="@+id/mainStatus"
@@ -51,7 +51,7 @@
             tools:ignore="SmallSp"
             android:layout_gravity="center"
             android:gravity="center"
-            android:layout_marginEnd="5dp"/>
+            android:layout_marginEnd="25dp"/>
 
         <TextView
             android:id="@+id/minMaxTemp"
@@ -61,7 +61,6 @@
             android:textColor="@color/white"
             android:textSize="16sp"
             android:text="Temp"
-            android:layout_marginEnd="30sp"
             tools:ignore="SmallSp"
             android:layout_gravity="center"
             android:gravity="center"/>

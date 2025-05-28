@@ -1,6 +1,5 @@
 package com.example.weather_forecast.home.view
 
-import WeatherRemoteDataSourceImp
 import android.annotation.SuppressLint
 import android.icu.text.SimpleDateFormat
 import android.os.Bundle
@@ -34,6 +33,7 @@ import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.utils.NetworkUtils
 import com.example.weather_forecast.utils.location.LocationPermissionHandler
 import androidx.preference.PreferenceManager
+import com.example.weather_forecast.model.network.WeatherRemoteDataSourceImp.WeatherRemoteDataSourceImp
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -152,8 +152,10 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             isFavorite?.let {
                 Toast.makeText(
                     requireContext(),
-                    if (it) "$currentCityName Added to Favorites"
-                    else "$currentCityName Removed from Favorites",
+                    getString(
+                        if (it) R.string.added_to_favorites else R.string.removed_from_favorites,
+                        currentCityName
+                    ),
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -180,7 +182,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             if (lastLatitude != null && lastLongitude != null && currentCityName != null) {
                 homeViewModel.toggleFavoriteStatus(currentCityName!!, lastLatitude!!, lastLongitude!!)
             } else {
-                Toast.makeText(requireContext(), "No location selected", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), R.string.no_location, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -188,7 +190,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             Log.d("HomeFragment", "Settings button clicked")
             val navController = NavHostFragment.findNavController(this@HomeFragment)
             navController.navigate(R.id.action_nav_home_to_nav_settings)
-            Toast.makeText(requireContext(), "Settings Clicked", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.settings_clicked, Toast.LENGTH_SHORT).show()
         }
 
         binding.search.setOnClickListener {
@@ -199,7 +201,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
             val navController = NavHostFragment.findNavController(this@HomeFragment)
             navController.navigate(R.id.action_nav_home_to_nav_search, bundle)
-            Toast.makeText(requireContext(), "Manage your cities", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), R.string.manage_cities, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -221,6 +223,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
         outState.putDouble("lastLatitude", lastLatitude ?: 0.0)
         outState.putDouble("lastLongitude", lastLongitude ?: 0.0)
         outState.putBoolean("isFromSearchFragment", isFromSearchFragment)
@@ -268,7 +271,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         val pressureUnitDisplay = when (pressureUnit) {
             "hPa" -> getString(R.string.pressure_hpa)
             "mb" -> getString(R.string.pressure_mb)
-            "Hg" -> getString(R.string.pressure_inhg)
+            "in Hg" -> getString(R.string.pressure_inhg)
             "mm Hg" -> getString(R.string.pressure_mmhg)
             else -> getString(R.string.pressure_hpa)
         }
@@ -292,7 +295,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                         "Kelvin" -> currentWeather.mainTemp + 273.15
                         else -> currentWeather.mainTemp
                     }
-                    currentTemp.text = "${String.format("%.1f", temp)}${getTemperatureUnitSymbol(temperatureUnitDisplay)}"
+                    currentTemp.text = "${String.format("%.1f", temp.toDouble())}${getTemperatureUnitSymbol(temperatureUnitDisplay)}"
 
                     // Convert wind speed based on selected unit
                     val windSpeed = when (windSpeedUnit) {
@@ -307,7 +310,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                     val pressure = when (pressureUnit) {
                         "hPa" -> currentWeather.mainPressure.toDouble()
                         "mb" -> currentWeather.mainPressure.toDouble()
-                        "Hg" -> currentWeather.mainPressure * 0.02953
+                        "in Hg" -> currentWeather.mainPressure * 0.02953
                         "mm Hg" -> currentWeather.mainPressure * 0.75006
                         else -> currentWeather.mainPressure.toDouble()
                     }
@@ -315,8 +318,8 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
 
                     // Convert visibility based on selected unit
                     val visibility = when (visibilityUnit) {
-                        "m" -> currentWeather.visibility.toDouble()
-                        "km" -> currentWeather.visibility / 1000.0
+                        "Meters" -> currentWeather.visibility.toDouble()
+                        "Kilometers" -> currentWeather.visibility / 1000.0
                         "Miles" -> currentWeather.visibility / 1609.34
                         else -> currentWeather.visibility.toDouble()
                     }
@@ -346,7 +349,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                 Log.d("HomeFragment", "Current weather is null")
                 if (!NetworkUtils.isNetworkAvailable(requireContext())) {
                     binding.apply {
-                        currentTemp.text = "No Network"
+                        currentTemp.text = getString(R.string.no_network)
                         currentState.text = ""
                         currentDateAndTime.text = ""
                         imgIcon.setImageDrawable(ContextCompat.getDrawable(requireContext(), R.drawable.nowifi))
@@ -365,14 +368,14 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             "Celsius" -> "°C"
             "Fahrenheit" -> "°F"
             "Kelvin" -> "K"
-            "سيليزيوس" -> "°س"
+            "سيلزيوس" -> "°س"
             "كلفن" -> "°ك"
             "فهرنهايت" -> "°ف"
             else -> "°C"
         }
     }
 
-    fun formatUnixTimeToLocalTime(dt: Long): String {
+    private fun formatUnixTimeToLocalTime(dt: Long): String {
         val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
         val dateTime = Instant.ofEpochSecond(dt)
             .atZone(ZoneId.systemDefault())
@@ -387,13 +390,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
         } else {
             Log.d("HomeFragment", "No network, attempting to show cached data")
             homeViewModel.getStoredCityWeather(lat, lon)
-            homeViewModel.getStoredCurrentWeather()
+            homeViewModel.getStoredCurrentWeather(lat, lon)
             if (currentCityName != null) {
                 homeViewModel.getDailyWeatherByCity(currentCityName!!)
             }
             Toast.makeText(
                 requireContext(),
-                "No internet connection. Showing last update.",
+                R.string.no_internet,
                 Toast.LENGTH_LONG
             ).show()
         }

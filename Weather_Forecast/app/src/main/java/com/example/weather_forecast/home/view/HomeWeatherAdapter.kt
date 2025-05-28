@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.weather_forecast.R
 import com.example.weather_forecast.databinding.ItemDaysWeatherBinding
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
@@ -58,9 +59,12 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
         fun bind(weather: WeatherEntity) {
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val temperatureUnit = prefs.getString("temperature_unit", "Celsius") ?: "Celsius"
-            val windSpeedUnit = prefs.getString("wind_speed_unit", "m/s") ?: "m/s"
-            val pressureUnit = prefs.getString("pressure_unit", "hPa") ?: "hPa"
-            val visibilityUnit = prefs.getString("visibility_unit", "Meters") ?: "Meters"
+            val temperatureUnitDisplay = when (temperatureUnit) {
+                "Celsius" -> context.getString(R.string.temperature_celsius)
+                "Fahrenheit" -> context.getString(R.string.temperature_fahrenheit)
+                "Kelvin" -> context.getString(R.string.temperature_kelvin)
+                else -> context.getString(R.string.temperature_celsius)
+            }
             binding.apply {
                 Date.text = SimpleDateFormat("EEE", Locale.getDefault())
                     .format(Date(weather.dt * 1000))
@@ -70,15 +74,19 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
                     "Kelvin" -> weather.mainTemp + 273.15
                     else -> weather.mainTemp
                 }
-                minMaxTemp.text = "${String.format("%.1f", temp)}${getTemperatureUnitSymbol(temperatureUnit)}"
+                minMaxTemp.text = "${String.format("%.1f", temp)}${getTemperatureUnitSymbol(temperatureUnitDisplay)}"
                 mainStatus.text = weather.weatherMain
             }
         }
+
         private fun getTemperatureUnitSymbol(unit: String): String {
             return when (unit) {
                 "Celsius" -> "°C"
                 "Fahrenheit" -> "°F"
                 "Kelvin" -> "K"
+                "سيلزيوس" -> "°س"
+                "كلفن" -> "°ك"
+                "فهرنهايت" -> "°ف"
                 else -> "°C"
             }
         }

@@ -20,8 +20,8 @@ class WeatherLocalDataSourceImp(private val dao: WeatherDao) : WeatherLocalDataS
         return  dao.getCityWeather(lat,lon)
     }
 
-    override suspend fun getCurrentWeather(): CurrentWeatherEntity {
-        return dao.getCurrentWeather()
+    override suspend fun getCurrentWeather(lat: Double, lon: Double): CurrentWeatherEntity {
+        return dao.getCurrentWeather(lat, lon)
     }
 
     override suspend fun clearOldWeather(timestamp: Long) {

@@ -11,6 +11,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.weather_forecast.R
 import com.example.weather_forecast.databinding.ItemCurrentWeatherBinding
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.pojos.getIconResId
@@ -59,8 +60,12 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
             val prefs = PreferenceManager.getDefaultSharedPreferences(context)
             val temperatureUnit = prefs.getString("temperature_unit", "Celsius") ?: "Celsius"
             val windSpeedUnit = prefs.getString("wind_speed_unit", "m/s") ?: "m/s"
-            val pressureUnit = prefs.getString("pressure_unit", "hPa") ?: "hPa"
-            val visibilityUnit = prefs.getString("visibility_unit", "Meters") ?: "Meters"
+            val temperatureUnitDisplay = when (temperatureUnit) {
+                "Celsius" -> context.getString(R.string.temperature_celsius)
+                "Fahrenheit" -> context.getString(R.string.temperature_fahrenheit)
+                "Kelvin" -> context.getString(R.string.temperature_kelvin)
+                else -> context.getString(R.string.temperature_celsius)
+            }
             binding.apply {
                 time.text = SimpleDateFormat("HH:mm", Locale.getDefault())
                     .format(Date(weather.dt * 1000))
@@ -70,7 +75,7 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
                     "Kelvin" -> weather.mainTemp + 273.15
                     else -> weather.mainTemp
                 }
-                temp.text = "${String.format("%.1f", temprature)}${getTemperatureUnitSymbol(temperatureUnit)}"
+                temp.text = "${String.format("%.1f", temprature)}${getTemperatureUnitSymbol(temperatureUnitDisplay)}"
                 // Convert wind speed based on selected unit
                 val windspeed = when (windSpeedUnit) {
                     "m/s" -> weather.windSpeed
@@ -82,11 +87,15 @@ class HomeTodayAdapter(private val context: Context, var weatherEntity: List<Wea
 
             }
         }
+
         private fun getTemperatureUnitSymbol(unit: String): String {
             return when (unit) {
                 "Celsius" -> "°C"
                 "Fahrenheit" -> "°F"
                 "Kelvin" -> "K"
+                "سيلزيوس" -> "°س"
+                "كلفن" -> "°ك"
+                "فهرنهايت" -> "°ف"
                 else -> "°C"
             }
         }

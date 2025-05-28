@@ -28,7 +28,7 @@
     <string-array name="pressure_values">
         <item>hPa</item>
         <item>mb</item>
-        <item>Hg</item>
+        <item>in Hg</item>
         <item>mm Hg</item>
     </string-array>
     <string-array name="temperature_units">
@@ -41,6 +41,10 @@
         <item>Kelvin</item>
         <item>Fahrenheit</item>
     </string-array>
+    <string-array name="elevation_units">
+        <item>@string/elevation_meters</item>
+        <item>@string/elevation_feet</item>
+    </string-array>
     <string-array name="elevation_values">
         <item>Meters</item>
         <item>Feet</item>
@@ -51,8 +55,8 @@
         <item>@string/visibility_miles</item>
     </string-array>
     <string-array name="visibility_values">
-        <item>m</item>
-        <item>km</item>
+        <item>Meters</item>
+        <item>Kilometers</item>
         <item>Miles</item>
     </string-array>
 </resources>

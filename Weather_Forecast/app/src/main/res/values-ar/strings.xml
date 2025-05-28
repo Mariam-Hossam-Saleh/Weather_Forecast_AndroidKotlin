@@ -23,6 +23,29 @@
     <string name="visibility">الرؤية</string>
 
 
+    <!-- Wind speed entries -->
+<!--    <string name="wind_speed_ms">متر/ثانية</string>-->
+<!--    <string name="wind_speed_kmh">كيلومتر/ساعة</string>-->
+<!--    <string name="wind_speed_mph">ميل/ساعة</string>-->
+
+    <!-- Pressure entries -->
+<!--    <string name="pressure_hpa">هيكتوباسكال</string>-->
+<!--    <string name="pressure_mb">مليبار</string>-->
+<!--    <string name="pressure_inhg">بوصة زئبق</string>-->
+<!--    <string name="pressure_mmhg">مم زئبق</string>-->
+
+    <!-- Temperature entries -->
+<!--    <string name="temperature_celsius">سيليزيوس</string>-->
+<!--    <string name="temperature_kelvin">كلفن</string>-->
+<!--    <string name="temperature_fahrenheit">فهرنهايت</string>-->
+
+
+
+    <!-- Visibility entries -->
+    <string name="visibility_meters">متر</string>
+    <string name="visibility_kilometers">كيلومتر</string>
+    <string name="visibility_miles">ميل</string>
+
     <!-- Preference titles -->
     <string name="language_title">اللغة</string>
     <string name="wind_speed_unit_title">وحدة سرعة الرياح</string>
@@ -36,27 +59,39 @@
     <string name="language_english">الإنجليزية</string>
     <string name="language_arabic">العربية</string>
 
-    <!-- Wind speed entries -->
-    <string name="wind_speed_ms">متر/ثانية</string>
-    <string name="wind_speed_kmh">كيلومتر/ساعة</string>
-    <string name="wind_speed_mph">ميل/ساعة</string>
+    <!-- Temperature units -->
+    <string name="temperature_celsius">سيلزيوس</string>
+    <string name="temperature_fahrenheit">فهرنهايت</string>
+    <string name="temperature_kelvin">كلفن</string>
 
-    <!-- Pressure entries -->
+    <!-- Wind speed units -->
+    <string name="wind_speed_ms">م/ث</string>
+    <string name="wind_speed_kmh">كم/س</string>
+    <string name="wind_speed_mph">ميل/س</string>
+
+    <!-- Pressure units -->
     <string name="pressure_hpa">هيكتوباسكال</string>
     <string name="pressure_mb">مليبار</string>
     <string name="pressure_inhg">بوصة زئبق</string>
     <string name="pressure_mmhg">مم زئبق</string>
 
-    <!-- Temperature entries -->
-    <string name="temperature_celsius">سيليزيوس</string>
-    <string name="temperature_kelvin">كلفن</string>
-    <string name="temperature_fahrenheit">فهرنهايت</string>
+    <!-- Elevation units -->
+    <string name="elevation_meters">أمتار</string>
+    <string name="elevation_feet">أقدام</string>
 
-
-
-    <!-- Visibility entries -->
-    <string name="visibility_meters">متر</string>
-    <string name="visibility_kilometers">كيلومتر</string>
-    <string name="visibility_miles">ميل</string>
-
+    <!-- HomeFragment UI labels -->
+    <string name="temperature_label">درجة الحرارة</string>
+    <string name="wind_speed_label">سرعة الرياح</string>
+    <string name="pressure_label">الضغط</string>
+    <string name="visibility_label">الرؤية</string>
+    <string name="humidity_label">الرطوبة</string>
+    <string name="sunrise_label">شروق الشمس</string>
+    <string name="sunset_label">غروب الشمس</string>
+    <string name="no_network">لا يوجد اتصال بالشبكة</string>
+    <string name="no_location">لم يتم تحديد موقع</string>
+    <string name="manage_cities">إدارة مدنك</string>
+    <string name="settings_clicked">تم النقر على الإعدادات</string>
+    <string name="added_to_favorites">تمت إضافة %1$s إلى المفضلة</string>
+    <string name="removed_from_favorites">تمت إزالة %1$s من المفضلة</string>
+    <string name="no_internet">لا يوجد اتصال بالإنترنت. عرض آخر تحديث.</string>
 </resources>
