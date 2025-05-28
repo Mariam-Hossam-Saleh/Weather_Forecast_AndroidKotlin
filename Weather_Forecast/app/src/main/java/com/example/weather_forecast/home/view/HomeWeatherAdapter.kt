@@ -17,7 +17,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<WeatherEntity>, private val onItemClick: OnWeatherClickListener) : RecyclerView.Adapter<HomeWeatherAdapter.WeatherViewHolder>() {
+class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<WeatherEntity>) : RecyclerView.Adapter<HomeWeatherAdapter.WeatherViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WeatherViewHolder {
         val binding = ItemDaysWeatherBinding.inflate(
@@ -25,7 +25,7 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
             parent,
             false
         )
-        return WeatherViewHolder(binding, onItemClick) // Pass the click listener to ViewHolder
+        return WeatherViewHolder(binding)
     }
 
     override fun getItemCount(): Int {
@@ -50,7 +50,6 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
 
     class WeatherViewHolder(
         val binding: ItemDaysWeatherBinding,
-        val onItemClick: OnWeatherClickListener
     ) : RecyclerView.ViewHolder(binding.root) {
 
         @SuppressLint("SetTextI18n")
@@ -60,9 +59,6 @@ class HomeWeatherAdapter(private val context: Context, var weatherEntity: List<W
                     .format(Date(weather.dt * 1000))
                 minMaxTemp.text = "${weather.mainTemp_min}/${weather.mainTemp_max}°C"
                 mainStatus.text = weather.weatherMain
-                root.setOnClickListener {
-                    onItemClick.onWeatherClick(weather)
-                }
             }
         }
     }

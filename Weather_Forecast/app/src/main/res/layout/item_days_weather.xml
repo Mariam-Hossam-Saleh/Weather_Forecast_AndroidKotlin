@@ -27,15 +27,17 @@
             android:textColor="@color/white"
             android:textSize="20sp"
             android:text="@string/date"
-            android:layout_marginStart="30dp"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="15dp"
+            android:layout_gravity="center"
             android:gravity="center"
             tools:ignore="SmallSp" />
         <ImageView
             android:id="@+id/imgIcon"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@android:color/transparent"
+            android:layout_gravity="center"
             android:layout_marginEnd="15dp"/>
 
         <TextView
@@ -47,6 +49,7 @@
             android:textSize="16sp"
             android:text="State"
             tools:ignore="SmallSp"
+            android:layout_gravity="center"
             android:gravity="center"
             android:layout_marginEnd="5dp"/>
 
@@ -60,6 +63,7 @@
             android:text="Temp"
             android:layout_marginEnd="30sp"
             tools:ignore="SmallSp"
+            android:layout_gravity="center"
             android:gravity="center"/>
 
     </LinearLayout>

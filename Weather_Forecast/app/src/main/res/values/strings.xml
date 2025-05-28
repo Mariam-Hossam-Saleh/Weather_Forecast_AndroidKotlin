@@ -15,4 +15,11 @@
     <string name="state">State</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="humidity">Humidity</string>
+    <string name="windspeed">Wind Speed</string>
+    <string name="pressure">Pressure</string>
+    <string name="clouds">Clouds</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+
 </resources>

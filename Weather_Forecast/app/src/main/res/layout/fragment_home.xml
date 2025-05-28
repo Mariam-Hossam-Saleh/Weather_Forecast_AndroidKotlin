@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@android:color/transparent"
     android:fillViewport="true">
 
@@ -92,11 +92,11 @@
             app:cardBackgroundColor="@android:color/transparent">
             <ImageView
                 android:id="@+id/btnFavorite"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="top|end"
-                android:layout_marginTop="350dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginTop="370dp"
+                android:layout_marginEnd="30dp"
                 app:srcCompat="@drawable/favourite" />
             <ImageView
                 android:id="@+id/settings"
@@ -121,7 +121,17 @@
                 android:orientation="vertical"
                 android:background="@color/transparent"
                 android:layout_marginTop="30dp"
+                android:layout_gravity="center"
                 android:gravity="center">
+
+                <TextView
+                    android:id="@+id/currentCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="City Name"
+                    android:textColor="@color/white"
+                    android:textSize="30dp"
+                    android:layout_marginBottom="10dp" />
 
                 <TextView
                     android:id="@+id/currentState"
@@ -157,11 +167,217 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+            <LinearLayout
+                android:layout_width="170dp"
+                android:layout_height="175dp"
+                android:background="@drawable/rounded_bg"
+                android:orientation="vertical"
+                android:scaleType="centerCrop">
+
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="10dp"
+                        android:textSize="16sp"
+                        android:text="@string/humidity"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/humidity"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="45dp"
+                        android:text="-------"
+                        android:textSize="16sp"
+                        tools:ignore="SmallSp"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="18dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="10dp"
+                        android:textSize="16sp"
+                        android:text="@string/windspeed"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/windSpeed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="25dp"
+                        android:text="-------"
+                        android:textSize="16sp"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="18dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="10dp"
+                        android:textSize="16sp"
+                        android:text="@string/pressure"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/pressure"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="45dp"
+                        android:text="-------"
+                        android:textSize="16sp"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_marginStart="20dp"
+                android:layout_width="170dp"
+                android:layout_height="175dp"
+                android:background="@drawable/rounded_bg"
+                android:orientation="vertical"
+                android:scaleType="centerCrop">
+                <LinearLayout
+                    android:layout_marginTop="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="10dp"
+                        android:textSize="16sp"
+                        android:layout_marginTop="10dp"
+                        android:text="@string/clouds"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/clouds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="50dp"
+                        android:text="-------"
+                        android:textSize="16sp"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="18dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="10dp"
+                        android:textSize="16sp"
+                        android:text="@string/sunrise"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/sunrise"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="45dp"
+                        android:text="-------"
+                        android:textSize="16sp"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginVertical="18dp"
+                    android:background="@color/white" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="10dp"
+                        android:textSize="16sp"
+                        android:text="@string/sunset"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                    <TextView
+                        android:id="@+id/sunset"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent"
+                        android:textColor="@color/white"
+                        android:layout_marginStart="50dp"
+                        android:text="-------"
+                        android:textSize="16sp"
+                        tools:ignore="SmallSp"
+                        android:gravity="center"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/todayRecycleView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="20dp"
             android:background="@android:color/transparent" />
 
         <androidx.recyclerview.widget.RecyclerView

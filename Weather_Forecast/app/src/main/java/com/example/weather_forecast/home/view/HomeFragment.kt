@@ -33,6 +33,9 @@ import com.example.weather_forecast.model.pojos.getWeatherStateResId
 import com.example.weather_forecast.model.repo.WeatherRepositoryImp
 import com.example.weather_forecast.utils.NetworkUtils
 import com.example.weather_forecast.utils.location.LocationPermissionHandler
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -226,7 +229,7 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
     private fun setUpRecyclerView() {
         homeWeatherLayoutManager = LinearLayoutManager(requireContext())
         homeWeatherLayoutManager.orientation = RecyclerView.VERTICAL
-        homeWeatherAdapter = HomeWeatherAdapter(requireContext(), ArrayList(), this)
+        homeWeatherAdapter = HomeWeatherAdapter(requireContext(), ArrayList())
         homeRecyclerView = binding.nextDaysRecycleView
         homeRecyclerView.setHasFixedSize(true)
         homeRecyclerView.adapter = homeWeatherAdapter
@@ -253,6 +256,14 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
                     currentState.text = currentWeather.weatherMain
                     currentDateAndTime.text = SimpleDateFormat("EEE, MMM d, HH:mm", Locale.getDefault())
                         .format(Date(currentWeather.dt * 1000))
+                    currentCity.text = currentWeather.cityName
+                    humidity.text = "${currentWeather.mainHumidity}%"
+                    windSpeed.text = currentWeather.windSpeed.toString()
+                    pressure.text = currentWeather.mainPressure.toString()
+                    clouds.text = "${currentWeather.clouds}%"
+                    sunrise.text = formatUnixTimeToLocalTime(currentWeather.sysSunrise)
+                    sunset.text = formatUnixTimeToLocalTime(currentWeather.sysSunset)
+                    Log.i("TempMinMax", "Min: ${currentWeather.mainTemp_min}, Max: ${currentWeather.mainTemp_max}")
                     Glide.with(requireContext())
                         .load(getIconResId(currentWeather.weatherIcon))
                         .apply(
@@ -282,6 +293,14 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             }
         }
     }
+
+    fun formatUnixTimeToLocalTime(dt: Long): String {
+        val formatter = DateTimeFormatter.ofPattern("h:mm a", Locale.getDefault())
+        val dateTime = Instant.ofEpochSecond(dt)
+            .atZone(ZoneId.systemDefault())
+        return dateTime.format(formatter)
+    }
+
 
     private fun fetchWeatherForLocation(lat: Double, lon: Double) {
         if (NetworkUtils.isNetworkAvailable(requireContext())) {
