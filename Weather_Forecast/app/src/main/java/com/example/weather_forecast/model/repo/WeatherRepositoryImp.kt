@@ -4,6 +4,8 @@ import com.example.weather_forecast.model.database.WeatherLocalDataSource
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
 import com.example.weather_forecast.model.network.WeatherRemoteDataSource
+import com.example.weather_forecast.model.pojos.AlertEntity
+import kotlinx.coroutines.flow.Flow
 
 class WeatherRepositoryImp (
     private var weatherRemoteDataSource : WeatherRemoteDataSource,
@@ -88,6 +90,18 @@ class WeatherRepositoryImp (
 
     override suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity> {
         return weatherLocalDataSource.getDailyWeatherByCity(cityName)
+    }
+
+    suspend fun insertAlert(alert: AlertEntity) {
+        weatherLocalDataSource.insertAlert(alert)
+    }
+
+    fun getActiveAlerts(): Flow<List<AlertEntity>> {
+        return weatherLocalDataSource.getActiveAlerts()
+    }
+
+    suspend fun disableAlert(alertId: String) {
+        weatherLocalDataSource.disableAlert(alertId)
     }
 
 }

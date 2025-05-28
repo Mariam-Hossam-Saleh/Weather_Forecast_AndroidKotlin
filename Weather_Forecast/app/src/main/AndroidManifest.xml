@@ -4,6 +4,8 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <application
         android:allowBackup="true"
@@ -29,8 +31,9 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:exported="false"
-            />
+            android:exported="false" />
+        <receiver android:name=".receivers.AlertReceiver"/>
+        <receiver android:name=".receivers.StopAlertReceiver"/>
     </application>
 
 </manifest>

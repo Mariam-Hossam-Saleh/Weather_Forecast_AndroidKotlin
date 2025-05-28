@@ -105,4 +105,25 @@
     <string name="gps">نظام تحديد المواقع</string>
     <string name="map">Select Location</string>
 
+    <string name="weather_alerts">تنبيهات الطقس</string>
+    <string name="add_weather_alert">إضافة تنبيه طقس</string>
+    <string name="select_location">اختيار الموقع</string>
+    <string name="start_date">تاريخ البدء (YYYY-MM-DD)</string>
+    <string name="start_time">وقت البدء (HH:MM)</string>
+    <string name="end_date">تاريخ الانتهاء (YYYY-MM-DD)</string>
+    <string name="end_time">وقت الانتهاء (HH:MM)</string>
+    <string name="save">حفظ</string>
+    <string name="cancel">إلغاء</string>
+    <string name="complete_all_fields">يرجى إكمال جميع الحقول</string>
+    <string name="invalid_date_time">تاريخ أو وقت غير صالح</string>
+    <string name="alert_scheduled">تم جدولة التنبيه</string>
+    <string name="alert_disabled">تم تعطيل التنبيه</string>
+    <string name="location_selected">تم اختيار الموقع</string>
+    <string name="location_lat_lon">خط العرض: %1$.2f، خط الطول: %2$.2f</string>
+    <string name="time_range">من %1$s إلى %2$s</string>
+    <string name="disable_alert">تعطيل</string>
+    <string name="alert_type_notification">إشعار</string>
+    <string name="alert_type_alarm">منبه</string>
+    <string name="alert_for_location">تنبيه طقس لخط العرض: %1$.2f، خط الطول: %2$.2f</string>
+    <string name="stop">إيقاف</string>
 </resources>

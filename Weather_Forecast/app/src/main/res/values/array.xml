@@ -68,4 +68,9 @@
         <item>gps</item>
         <item>map</item>
     </string-array>
+
+    <string-array name="alert_types">
+        <item>@string/alert_type_notification</item>
+        <item>@string/alert_type_alarm</item>
+    </string-array>
 </resources>

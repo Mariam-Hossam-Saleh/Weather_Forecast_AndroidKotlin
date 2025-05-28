@@ -16,13 +16,16 @@
         <action
             android:id="@+id/action_nav_home_to_nav_settings"
             app:destination="@id/nav_settings" />
+        <action
+            android:id="@+id/action_nav_home_to_nav_alert"
+            app:destination="@id/nav_alert" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_search"
         android:name="com.example.weather_forecast.search.view.SearchFragment"
         android:label="@string/menu_search"
-        tools:layout="@layout/fragment_gallery" >
+        tools:layout="@layout/fragment_search" >
         <action
             android:id="@+id/action_nav_search_to_nav_home"
             app:destination="@id/nav_home"
@@ -34,11 +37,11 @@
     android:id="@+id/nav_settings"
     android:name="com.example.weather_forecast.settings.view.SettingsFragment"
     android:label="@string/menu_favorite"
-    tools:layout="@layout/fragment_slideshow" />
+    tools:layout="@layout/fragment_settings" />
 
-<!--    <fragment-->
-<!--        android:id="@+id/nav_favorite"-->
-<!--        android:name="com.example.weather_forecast.ui.slideshow.SlideshowFragment"-->
-<!--        android:label="@string/menu_favorite"-->
-<!--        tools:layout="@layout/fragment_slideshow" />-->
+    <fragment
+        android:id="@+id/nav_alert"
+        android:name="com.example.weather_forecast.alert.view.WeatherAlertFragment"
+        android:label="@string/weather_alerts"
+        tools:layout="@layout/fragment_weather_alert"/>
 </navigation>

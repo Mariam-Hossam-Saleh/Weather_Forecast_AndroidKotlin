@@ -25,9 +25,9 @@
 
 
     <!-- Visibility entries -->
-<!--    <string name="visibility_meters">m</string>-->
-<!--    <string name="visibility_kilometers">km</string>-->
-<!--    <string name="visibility_miles">mile</string>-->
+    <!--    <string name="visibility_meters">m</string>-->
+    <!--    <string name="visibility_kilometers">km</string>-->
+    <!--    <string name="visibility_miles">mile</string>-->
 
     <!-- Preference titles -->
     <string name="language_title">Language</string>
@@ -93,6 +93,28 @@
     <string name="location_source_message">How would you like to set your location for weather updates?</string>
     <string name="gps">GPS</string>
     <string name="map">Map</string>
+
+    <string name="weather_alerts">Weather Alerts</string>
+    <string name="add_weather_alert">Add Weather Alert</string>
+    <string name="select_location">Select Location</string>
+    <string name="start_date">Start Date (YYYY-MM-DD)</string>
+    <string name="start_time">Start Time (HH:MM)</string>
+    <string name="end_date">End Date (YYYY-MM-DD)</string>
+    <string name="end_time">End Time (HH:MM)</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="complete_all_fields">Please complete all fields</string>
+    <string name="invalid_date_time">Invalid date or time</string>
+    <string name="alert_scheduled">Alert scheduled</string>
+    <string name="alert_disabled">Alert disabled</string>
+    <string name="location_selected">Location selected</string>
+    <string name="location_lat_lon">Lat: %1$.2f, Lon: %2$.2f</string>
+    <string name="time_range">From %1$s to %2$s</string>
+    <string name="disable_alert">Disable</string>
+    <string name="alert_type_notification">Notification</string>
+    <string name="alert_type_alarm">Alarm</string>
+    <string name="alert_for_location">Weather alert for Lat: %1$.2f, Lon: %2$.2f</string>
+    <string name="stop">Stop</string>
 
 
 </resources>

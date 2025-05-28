@@ -1,7 +1,9 @@
 package com.example.weather_forecast.model.database
 
+import com.example.weather_forecast.model.pojos.AlertEntity
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
+import kotlinx.coroutines.flow.Flow
 
 class WeatherLocalDataSourceImp(private val dao: WeatherDao) : WeatherLocalDataSource {
     override suspend fun insertWeatherList(weatherList: List<WeatherEntity>) {
@@ -50,5 +52,17 @@ class WeatherLocalDataSourceImp(private val dao: WeatherDao) : WeatherLocalDataS
 
     override suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity> {
         return dao.getDailyWeatherByCity(cityName)
+    }
+
+    override suspend fun insertAlert(alert: AlertEntity) {
+        dao.insertAlert(alert)
+    }
+
+    override fun getActiveAlerts(): Flow<List<AlertEntity>> {
+        return dao.getActiveAlerts()
+    }
+
+    override suspend fun disableAlert(alertId: String) {
+        dao.disableAlert(alertId)
     }
 }

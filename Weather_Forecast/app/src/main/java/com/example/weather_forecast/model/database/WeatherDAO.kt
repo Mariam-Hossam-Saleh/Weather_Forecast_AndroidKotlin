@@ -1,11 +1,14 @@
 package com.example.weather_forecast.model.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.example.weather_forecast.model.pojos.AlertEntity
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WeatherDao {
@@ -59,4 +62,16 @@ interface WeatherDao {
 """)
     suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity>
 
+
+    @Insert
+    suspend fun insertAlert(alert: AlertEntity)
+
+    @Query("SELECT * FROM alerts WHERE isActive = 1")
+    fun getActiveAlerts(): Flow<List<AlertEntity>>
+
+    @Query("UPDATE alerts SET isActive = 0 WHERE id = :alertId")
+    suspend fun disableAlert(alertId: String)
+
+    @Delete
+    suspend fun deleteAlert(alert: AlertEntity)
 }

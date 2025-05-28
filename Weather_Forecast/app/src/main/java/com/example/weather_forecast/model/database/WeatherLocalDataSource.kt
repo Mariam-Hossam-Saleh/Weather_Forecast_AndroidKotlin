@@ -1,7 +1,9 @@
 package com.example.weather_forecast.model.database
 
+import com.example.weather_forecast.model.pojos.AlertEntity
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
+import kotlinx.coroutines.flow.Flow
 
 interface WeatherLocalDataSource {
 
@@ -28,5 +30,11 @@ interface WeatherLocalDataSource {
     suspend fun getFavoriteWeatherEntities(): List<WeatherEntity>
 
     suspend fun getDailyWeatherByCity(cityName: String): List<WeatherEntity>
+
+    suspend fun insertAlert(alert: AlertEntity)
+
+    fun getActiveAlerts(): Flow<List<AlertEntity>>
+
+    suspend fun disableAlert(alertId: String)
 
 }

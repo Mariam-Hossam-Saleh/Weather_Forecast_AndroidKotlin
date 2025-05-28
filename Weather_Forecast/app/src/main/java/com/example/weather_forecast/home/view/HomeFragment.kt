@@ -447,6 +447,13 @@ class HomeFragment : Fragment(), OnWeatherClickListener {
             navController.navigate(R.id.action_nav_home_to_nav_search, bundle)
             Toast.makeText(requireContext(), R.string.manage_cities, Toast.LENGTH_SHORT).show()
         }
+
+        binding.btnAlert.setOnClickListener {
+            Log.d("HomeFragment", "Alerts button clicked")
+            val navController = NavHostFragment.findNavController(this@HomeFragment)
+            navController.navigate(R.id.action_nav_home_to_nav_alert)
+            Toast.makeText(requireContext(), R.string.weather_alerts, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getTemperatureUnitSymbol(unit: String): String {

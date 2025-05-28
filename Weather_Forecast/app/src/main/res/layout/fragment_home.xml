@@ -110,6 +110,14 @@
                     android:layout_marginEnd="30dp"
                     app:srcCompat="@drawable/favourite" />
                 <ImageView
+                    android:id="@+id/btnAlert"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="top|start"
+                    android:layout_marginTop="325dp"
+                    android:layout_marginStart="30dp"
+                    app:srcCompat="@drawable/favourite" />
+                <ImageView
                     android:id="@+id/settings"
                     android:layout_width="20dp"
                     android:layout_height="20dp"

@@ -4,13 +4,15 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.weather_forecast.model.pojos.AlertEntity
 import com.example.weather_forecast.model.pojos.CurrentWeatherEntity
 import com.example.weather_forecast.model.pojos.WeatherEntity
 
 @Database(
     entities = [
         WeatherEntity::class,
-        CurrentWeatherEntity::class
+        CurrentWeatherEntity::class,
+        AlertEntity::class
     ],
     version = 1
 )
