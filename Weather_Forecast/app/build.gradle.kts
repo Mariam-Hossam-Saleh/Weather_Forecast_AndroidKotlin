@@ -91,4 +91,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0'")
     implementation("org.osmdroid:osmdroid-android:6.1.10")
 
+    // prefrence
+    implementation("androidx.preference:preference-ktx:1.2.0")
+
 }

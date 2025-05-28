@@ -51,7 +51,8 @@ class SearchAdapter(private val context: Context, var weatherEntity: List<Weathe
             binding.apply {
                 favItem.background = ContextCompat.getDrawable(root.context, getWeatherStateResId(weather.weatherMain))
                 cityName.text = weather.cityName
-                minMaxTemp.text = "${weather.mainTemp_min}/${weather.mainTemp_max}°C"
+                currentState.text = weather.weatherMain
+//                minMaxTemp.text = "${weather.mainTemp_min}/${weather.mainTemp_max}°C"
                 mainTemp.text = "${weather.mainTemp}°C"
                 root.setOnClickListener {
                     onItemClick.onLocationClick(weather)
